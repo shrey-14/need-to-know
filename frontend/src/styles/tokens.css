@@ -1,0 +1,37 @@
+:root {
+  /* Ground */
+  --color-bg: #0b0f14;
+  --color-panel: #151a21;
+  --color-panel-raised: #1b2129;
+  --color-border: #2b333d;
+  --color-border-strong: #3c4854;
+
+  /* Text */
+  --color-text: #e7e5df;
+  --color-text-muted: #9b9585;
+
+  /* The one committed accent */
+  --color-amber: #f2a63d;
+  --color-amber-dim: #b97e2c;
+  --color-amber-hover: #ffb84f;
+
+  /* Declined / error (a single muted rust, not a second bright accent).
+     -dim is used as a border/UI-component color, so it's tuned to clear the
+     3:1 non-text contrast floor (WCAG 1.4.11), not just look "dim". */
+  --color-declined: #d97a5f;
+  --color-declined-dim: #9c5a45;
+
+  /* Type */
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: "DM Sans", -apple-system, sans-serif;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+}

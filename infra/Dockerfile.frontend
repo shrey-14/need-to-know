@@ -1,0 +1,1 @@
+# Multi-stage: `npm run build` the Vite app, serve the static output via nginx. CI/CD phase.

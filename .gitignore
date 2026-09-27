@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env/*
+
+# Vector store / runtime data
+.chroma/
+monitoring.sqlite3
+
+# Node / frontend
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+
+# Design/agent tooling (impeccable skill, hooks, its context files)
+.github/*
+!.github/workflows/
+.impeccable/
+DESIGN.md
+PRODUCT.md
+docs/BUILD_GUIDE.md
+
+# Challenge brief (not part of the project)
+*.docx
+metadata.txt
+
+# Scratch work
+app/ingestion/test.py
+eval/*.ipynb

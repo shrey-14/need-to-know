@@ -1,0 +1,26 @@
+# Demo users for local dev / evaluation. NOT for production use.
+#
+# password_hash values are bcrypt hashes generated with:
+#   python -c "import bcrypt; print(bcrypt.hashpw(b'yourpassword', bcrypt.gensalt()).decode())"
+#
+# Demo plaintext passwords (local dev only): finance123 / marketing123 / hr123 /
+# engineering123 / employee123 / clevel123
+users:
+  - username: finance_user
+    password_hash: "$2b$12$7r.afkeJZ6lsKdlF.YoKb.cke0a1ts6aPRQ4RelLGi9YfFmFe5H6u"
+    role: finance
+  - username: marketing_user
+    password_hash: "$2b$12$tUzQ/JuISIsTeDGemunX5u/JFcFkDTScAuoKx9grvnDg1C/1Zt6gK"
+    role: marketing
+  - username: hr_user
+    password_hash: "$2b$12$xzAK/fOlhDZz82BHRlvBbubJCFkbx.pNRFJQkY71554ZQPNQkVjnS"
+    role: hr
+  - username: engineering_user
+    password_hash: "$2b$12$ee6c.EulU.lnk3eMBdmvEeiv98xgUZhgtzxa0zKHmv6GWW.7Pu9VG"
+    role: engineering
+  - username: employee_user
+    password_hash: "$2b$12$HXV1yMGFFmKSdl9Nx.OMhOuk3ZsV6eN/eqXhJsS5cd5HM6PZnEW.K"
+    role: employee
+  - username: clevel_user
+    password_hash: "$2b$12$uMdO5Yqdf7qMv/8fuo2kcOz/.Bn8YYdPmIkzXBx2VoSpOF5IBfo06"
+    role: c_level

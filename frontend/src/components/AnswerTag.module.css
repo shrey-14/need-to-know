@@ -1,0 +1,19 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 2px var(--space-2);
+  border: 1px solid transparent;
+}
+
+.answered {
+  color: var(--color-amber);
+  border-color: var(--color-amber-dim);
+}
+
+.declined {
+  color: var(--color-declined);
+  border-color: var(--color-declined-dim);
+}

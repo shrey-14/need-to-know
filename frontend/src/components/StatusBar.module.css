@@ -1,0 +1,27 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-panel);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.title::before {
+  content: "\25CF";
+  color: var(--color-amber);
+  margin-right: var(--space-2);
+  font-size: 9px;
+  vertical-align: middle;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}

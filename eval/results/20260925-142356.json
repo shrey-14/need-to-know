@@ -1,0 +1,182 @@
+[
+  {
+    "user_input":"What was FinSolve's total revenue in 2024?",
+    "retrieved_contexts":[
+      "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+      "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+      "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+      "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global",
+      "2024 marked a year of both opportunity and challenge for FinSolve Technologies. Despite a robust revenue increase, we saw significant pressure in certain expense categories, notably vendor-related costs and software subscriptions. However, these"
+    ],
+    "response":"FinSolve\u2019s total revenue in 2024 was $9.4\u202fbillion. [Source: quarterly_financial_report.md]",
+    "reference":"FinSolve Technologies' total revenue in 2024 was $9.4 billion, a 28% year-over-year increase.",
+    "context_recall":1.0,
+    "llm_context_precision_with_reference":0.9999999999,
+    "faithfulness":1.0,
+    "factual_correctness(mode=f1)":0.67,
+    "tag":"single_fact",
+    "id":"sf-01"
+  },
+  {
+    "user_input":"What was FinSolve's net income in Q2 2024?",
+    "retrieved_contexts":[
+      "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+      "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+      "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+      "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global",
+      "2024 marked a year of both opportunity and challenge for FinSolve Technologies. Despite a robust revenue increase, we saw significant pressure in certain expense categories, notably vendor-related costs and software subscriptions. However, these"
+    ],
+    "response":"I don't have that information.",
+    "reference":"Net income in Q2 2024 was $275 million, up 12% year-over-year.",
+    "context_recall":0.0,
+    "llm_context_precision_with_reference":0.0,
+    "faithfulness":0.0,
+    "factual_correctness(mode=f1)":0.0,
+    "tag":"single_fact",
+    "id":"sf-02"
+  },
+  {
+    "user_input":"What was the customer acquisition cost in 2024?",
+    "retrieved_contexts":[
+      "Our projections for Q4 2024 were ambitious yet grounded in historical performance and market analysis. The key targets were:  \n- **Customer Acquisition Target**: 220,000 new customers",
+      "Key Metrics & KPIs:\n-------------------------------------------\n1. **Customer Acquisition Cost (CAC)**: $150 per new customer (down from $180 in 2023), reflecting more efficient targeting and optimization of ad spend.",
+      "Our Q2 2024 targets were designed to drive growth in new and existing markets while maintaining cost efficiency. The key projections were:  \n- **Customer Acquisition Target**: 200,000 new customers",
+      "Our Q1 2024 targets were designed to kickstart the year with momentum, balancing aggressive acquisition goals with efficient resource allocation. The key projections were:  \n- **Customer Acquisition Target**: 150,000 new customers",
+      "Our Q3 2024 targets were designed to balance growth in new markets with the retention of existing customers. The key projections were:  \n- **Customer Acquisition Target**: 180,000 new customers"
+    ],
+    "response":"The customer acquisition cost in 2024 was $150 per new customer. [Source: marketing_report_2024.md]",
+    "reference":"The customer acquisition cost in 2024 was $150 per new customer, down from $180 in 2023.",
+    "context_recall":1.0,
+    "llm_context_precision_with_reference":0.5,
+    "faithfulness":1.0,
+    "factual_correctness(mode=f1)":0.67,
+    "tag":"single_fact",
+    "id":"sf-03"
+  },
+  {
+    "user_input":"What was the marketing spend in Q3 2024?",
+    "retrieved_contexts":[
+      "The Q4 2024 marketing efforts were pivotal in solidifying our market position, enhancing customer engagement, and setting the stage for robust growth in the upcoming year. This report provides a detailed analysis of our marketing strategies,",
+      "Based on Q3 performance, we propose the following strategies for Q4 2024:  \n1. **Optimize Latin American Campaigns**: Increase ad spend by 15% in Colombia to address underperformance and achieve acquisition targets.",
+      "Based on Q2 performance, we propose the following strategies for Q3 2024:  \n1. **Deepen Southeast Asia Penetration**: Increase ad spend by 10% in Thailand to address competitive challenges and meet acquisition targets.",
+      "In Q4 2024, our marketing strategy centered on three core pillars: finalizing market penetration in key demographics, fostering stronger customer relationships through personalized engagement, and laying the groundwork for sustained growth in 2025.",
+      "Q4 2024 was a transformative quarter for our marketing efforts, with significant strides in customer acquisition, revenue growth, and brand loyalty. By aligning our strategies with market opportunities and leveraging data-driven insights, we"
+    ],
+    "response":"I don't have that information.",
+    "reference":"Marketing spend in Q3 2024 was $2 million.",
+    "context_recall":0.0,
+    "llm_context_precision_with_reference":0.0,
+    "faithfulness":0.0,
+    "factual_correctness(mode=f1)":0.0,
+    "tag":"single_fact",
+    "id":"sf-04"
+  },
+  {
+    "user_input":"What is the leave balance of Aadhya Patel?",
+    "retrieved_contexts":[
+      "Aadhya Patel (employee ID FINEMP1000) works as a Sales Manager in the Sales department (manager ID FINEMP1006), based in Ahmedabad. Their personal details includes their email address: aadhya.patel@fintechco.com, and their date of birth is 1991-04-03. They joined on 2018-11-20 and earn a salary of \u20b91,332,478.37. They have leave balance of 22 days and have taken 11 leaves so far, with an attendance rate of 99.31%. Their latest performance rating is 3, last reviewed on 2024-05-21.",
+      "Aadhya Singh (employee ID FINEMP1043) works as a Sales Manager in the Sales department (manager ID FINEMP1000), based in Pune. Their personal details includes their email address: aadhya.singh@fintechco.com, and their date of birth is 1984-05-24. They joined on 2024-06-02 and earn a salary of \u20b9849,227.01. They have leave balance of 17 days and have taken 14 leaves so far, with an attendance rate of 91.97%. Their latest performance rating is 4, last reviewed on 2024-02-16.",
+      "Aadhya Chowdhury (employee ID FINEMP1008) works as a Customer Support in the Operations department (manager ID FINEMP1007), based in Mumbai. Their personal details includes their email address: aadhya.chowdhury@fintechco.com, and their date of birth is 1977-06-18. They joined on 2019-02-12 and earn a salary of \u20b9370,315.98. They have leave balance of 7 days and have taken 5 leaves so far, with an attendance rate of 96.92%. Their latest performance rating is 5, last reviewed on 2024-08-07.",
+      "Aditya Patel (employee ID FINEMP1029) works as a Data Analyst in the Data department (manager ID FINEMP1009), based in Pune. Their personal details includes their email address: aditya.patel@fintechco.com, and their date of birth is 1997-06-28. They joined on 2020-01-17 and earn a salary of \u20b91,128,053.06. They have leave balance of 23 days and have taken 11 leaves so far, with an attendance rate of 97.48%. Their latest performance rating is 2, last reviewed on 2025-02-21.",
+      "Aadhya Kapoor (employee ID FINEMP1063) works as a Risk Analyst in the Risk department (manager ID FINEMP1004), based in Jaipur. Their personal details includes their email address: aadhya.kapoor@fintechco.com, and their date of birth is 1991-07-10. They joined on 2021-10-27 and earn a salary of \u20b91,833,641.20. They have leave balance of 8 days and have taken 1 leaves so far, with an attendance rate of 85.81%. Their latest performance rating is 2, last reviewed on 2024-06-29."
+    ],
+    "response":"The leave balance of Aadhya Patel is 22 days. [Source: hr_data.csv]",
+    "reference":"Aadhya Patel has a leave balance of 22 days.",
+    "context_recall":1.0,
+    "llm_context_precision_with_reference":0.9999999999,
+    "faithfulness":0.5,
+    "factual_correctness(mode=f1)":1.0,
+    "tag":"single_fact",
+    "id":"sf-05"
+  },
+  {
+    "user_input":"Which databases does FinSolve use in its data layer?",
+    "retrieved_contexts":[
+      "FinSolve's architecture is a microservices-based, cloud-native system designed for scalability, resilience, and security. It leverages a modular design to support rapid feature development and seamless integration with third-party financial systems",
+      "FinSolve Technologies is a leading FinTech company headquartered in Bangalore, India, with operations across North America, Europe, and Asia-Pacific. Founded in 2018, FinSolve provides innovative financial solutions, including digital banking,",
+      "Founded in 2016, FinSolve Technologies is a leading player in fintech with a presence across India and global markets. We are committed to ethical business, social responsibility, and fostering a culture of learning and growth.  \n---",
+      "FinSolve follows a Scrum-based Agile process with 2-week sprints:",
+      "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders."
+    ],
+    "response":"I don't have that information.",
+    "reference":"FinSolve's data layer uses PostgreSQL for transactional data, MongoDB for user profiles and metadata, Redis for caching and session management, and Amazon S3 for documents and backups.",
+    "context_recall":0.0,
+    "llm_context_precision_with_reference":0.0,
+    "faithfulness":0.0,
+    "factual_correctness(mode=f1)":null,
+    "tag":"single_fact",
+    "id":"sf-06"
+  },
+  {
+    "user_input":"What deployment strategy is used for production?",
+    "retrieved_contexts":[
+      "* **Staging Environment**:\n* Automatic deployment from the `develop` branch\n* Full test suite execution\n* Performance testing\n* **Production Environment**:\n* Scheduled deployments (bi-weekly)\n* Blue-green deployment strategy",
+      "* Jenkins for build orchestration\n* ArgoCD for GitOps-based deployment\n* Nexus Repository for artifact storage\n* Prometheus and Grafana for deployment monitoring",
+      "* Tool: Git (hosted on GitHub Enterprise)\n* Branch Strategy: Gitflow\n* `main`: Production-ready code\n* `develop`: Integration branch for features\n* `feature\/*`: New features and non-emergency fixes\n* `release\/*`: Release preparation",
+      "* Scheduled bi-weekly\n* Require manual approval\n* Use blue-green or canary deployment strategies",
+      "This document covers:  \n* System architecture and infrastructure\n* Software development lifecycle (SDLC)\n* Technology stack\n* Security and compliance frameworks\n* Testing and quality assurance methodologies\n* Deployment and DevOps practices"
+    ],
+    "response":"The production environment uses a **blue\u2011green deployment strategy**. [Source: engineering_master_doc.md]",
+    "reference":"Production uses scheduled bi-weekly deployments with a blue-green deployment strategy, automated smoke tests after deployment, and automated rollback on failure.",
+    "context_recall":null,
+    "llm_context_precision_with_reference":null,
+    "faithfulness":null,
+    "factual_correctness(mode=f1)":null,
+    "tag":"single_fact",
+    "id":"sf-07"
+  },
+  {
+    "user_input":"What are the company's core values?",
+    "retrieved_contexts":[
+      "- **Integrity**: We act with honesty and transparency.\n- **Respect**: We value diversity and treat everyone with dignity.\n- **Innovation**: We encourage creativity and continuous improvement.",
+      "- Treat all colleagues, clients, and vendors with respect and courtesy.\n- Maintain a positive, inclusive, and harassment-free environment.\n- Uphold confidentiality of company information at all times.",
+      "- **Customer Focus**: Our customers are at the heart of everything we do.\n- **Accountability**: We take responsibility for our actions and results.",
+      "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders.",
+      "- Provided as per statutory requirements and company policy."
+    ],
+    "response":"The company\u2019s core values are:\n\n- **Integrity** \u2013 act with honesty and transparency.  \n- **Respect** \u2013 value diversity and treat everyone with dignity.  \n- **Innovation** \u2013 encourage creativity and continuous improvement.  \n- **Customer Focus** \u2013 put customers at the heart of everything we do.  \n- **Accountability** \u2013 take responsibility for our actions and results.  \n\n[Source: employee_handbook.md]",
+    "reference":"FinSolve's core values are Integrity, Respect, Innovation, Customer Focus, and Accountability.",
+    "context_recall":null,
+    "llm_context_precision_with_reference":null,
+    "faithfulness":null,
+    "factual_correctness(mode=f1)":null,
+    "tag":"single_fact",
+    "id":"sf-08"
+  },
+  {
+    "user_input":"How many days per week can I work from home?",
+    "retrieved_contexts":[
+      "**Q: Can I work from home?**\nA: Up to 2 days\/week, subject to manager and business approval.  \n---",
+      "| **Public Holidays** | 10-14 days\/year (as per company calendar and state notifications) |\n| **Leave Without Pay** | Allowed with approval after exhausting paid leave |",
+      "- Up to 2 days\/week for eligible roles; must be approved by manager.\n- Must be reachable and available during core work hours.",
+      "| **Sick Leave** | 12 days\/year (non-cumulative; medical certificate for >2 days) |\n| **Casual Leave** | 7 days\/year (state-specific) |\n| **Maternity Leave** | 26 weeks (first two children); 12 weeks for subsequent children |",
+      "- **Standard Hours**: 9 hours\/day (including 1 hour break), 6 days\/week or 8 hours\/day, 5 days\/week (as per company policy).\n- **Flexible Timings**: Allowed for eligible roles, subject to manager approval."
+    ],
+    "response":"You can work from home up to **2 days per week**, subject to manager and business approval. [Source: employee_handbook.md]",
+    "reference":"Eligible roles can work from home up to 2 days per week, with manager approval.",
+    "context_recall":null,
+    "llm_context_precision_with_reference":null,
+    "faithfulness":null,
+    "factual_correctness(mode=f1)":null,
+    "tag":"single_fact",
+    "id":"sf-09"
+  },
+  {
+    "user_input":"When was FinSolve Technologies founded?",
+    "retrieved_contexts":[
+      "Founded in 2016, FinSolve Technologies is a leading player in fintech with a presence across India and global markets. We are committed to ethical business, social responsibility, and fostering a culture of learning and growth.  \n---",
+      "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders.",
+      "---  \n**Note**: This handbook is a living document and may be updated periodically. For policy clarifications or state-specific rules, please consult HR or refer to the company\u2019s policy portal.",
+      "- Access to online learning platforms (Coursera, Udemy, etc.).\n- Sponsorship for industry certifications (e.g., PMP, AWS).",
+      "- Processed within 30-60 days of exit, including leave encashment and statutory dues.  \n---"
+    ],
+    "response":"FinSolve Technologies was founded in 2016. [Source: employee_handbook.md]",
+    "reference":"FinSolve Technologies was founded in 2016.",
+    "context_recall":null,
+    "llm_context_precision_with_reference":null,
+    "faithfulness":null,
+    "factual_correctness(mode=f1)":null,
+    "tag":"single_fact",
+    "id":"sf-10"
+  }
+]

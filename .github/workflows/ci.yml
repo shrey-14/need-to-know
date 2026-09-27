@@ -1,0 +1,2 @@
+# Placeholder: lint + unit tests + Ragas eval gate -> build/push Docker images -> deploy to
+# Azure Container Apps. Filled in during the CI/CD + Azure deploy phase.
