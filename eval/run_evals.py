@@ -52,7 +52,9 @@ def git_state() -> dict:
 
     return {
         "commit": git("rev-parse", "HEAD"),  # None until the repo has a first commit
-        "dirty": bool(git("status", "--porcelain")),
+        # Only modified tracked files count: untracked files (e.g. the previous
+        # run's results JSON) don't change what the code does.
+        "dirty": bool(git("status", "--porcelain", "--untracked-files=no")),
     }
 
 
