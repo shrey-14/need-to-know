@@ -28,8 +28,6 @@ CLASSIFICATION_PROMPT = ChatPromptTemplate.from_messages([
 def get_relevance_score(query: str) -> float:
     """Layer 1: how closely does this query relate to anything in the corpus at all?"""
     results = vectorstore.similarity_search_with_relevance_scores(query, k=1)
-    print(results)
-    print("-" * 50)
     if not results:
         return 0.0
     _, score = results[0]

@@ -34,7 +34,7 @@ PROJECT_ROOT = EVAL_DIR.parent
 DATASET_PATH = EVAL_DIR / "eval_dataset.jsonl"
 RESULTS_DIR = EVAL_DIR / "results"
 settings = get_settings()
-JUDGE_MODEL = settings.groq_model
+JUDGE_MODEL = settings.groq_small_model
 
 
 def is_decline(answer: str) -> bool:
