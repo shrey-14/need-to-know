@@ -6,6 +6,7 @@
 import hashlib
 import inspect
 import json
+import math
 import os
 import subprocess
 import sys
@@ -20,7 +21,7 @@ from ragas import evaluate, EvaluationDataset, SingleTurnSample
 from ragas.run_config import RunConfig
 from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.metrics import LLMContextRecall, LLMContextPrecisionWithReference, Faithfulness, FactualCorrectness
+from ragas.metrics import LLMContextRecall, Faithfulness, FactualCorrectness
 
 from app.core.config import get_settings
 from app.core.roles import allowed_categories
@@ -81,6 +82,18 @@ def build_manifest(run_id: str, dataset_bytes: bytes, n_rows: int) -> dict:
             "rows": n_rows,
         },
     }
+
+
+def nan_to_none(obj):
+    """Recursively replace float NaN (unscored metrics) with None, so the file
+    is valid JSON with `null`s."""
+    if isinstance(obj, dict):
+        return {k: nan_to_none(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [nan_to_none(v) for v in obj]
+    if isinstance(obj, float) and math.isnan(obj):
+        return None
+    return obj
 
 
 def db_now(conn) -> datetime:
@@ -159,10 +172,10 @@ def main() -> int:
         ended_at = db_now(conn)
         ops = ops_summary(conn, started_at, ended_at)
 
-    judge = LangchainLLMWrapper(ChatGroq(model=JUDGE_MODEL, api_key=settings.groq_api_key, temperature=0))
+    judge = LangchainLLMWrapper(ChatGroq(model=JUDGE_MODEL, api_key=settings.groq_api_key, temperature=0, reasoning_effort="low"))
     ragas_result = evaluate(
         dataset=EvaluationDataset(samples=samples),
-        metrics=[LLMContextRecall(), LLMContextPrecisionWithReference(), Faithfulness(), FactualCorrectness()],
+        metrics=[LLMContextRecall(), Faithfulness(), FactualCorrectness()],
         llm=judge,
         embeddings=LangchainEmbeddingsWrapper(hf),
         run_config=RunConfig(max_workers=1, timeout=180, max_retries=5),
@@ -188,10 +201,11 @@ def main() -> int:
         "summary": summary,
         "ops": ops,
         "failures": failures,
-        "results": df.astype(object).where(df.notna(), None).to_dict(orient="records"),
+        "results": df.to_dict(orient="records"),
     }
     out_path = RESULTS_DIR / f"{run_id}.json"
-    out_path.write_text(json.dumps(out, indent=2, default=str))
+    # allow_nan=False: fail loudly rather than ever write bare NaN (invalid JSON)
+    out_path.write_text(json.dumps(nan_to_none(out), indent=2, default=str, allow_nan=False))
 
     print(f"\nRun {run_id} · commit {manifest['git']['commit'] or 'none'}"
           f"{' (dirty)' if manifest['git']['dirty'] else ''} · {manifest['config']}")
