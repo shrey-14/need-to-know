@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     groq_model: str = "openai/gpt-oss-120b"
     groq_small_model: str = "openai/gpt-oss-20b"
+    qwen_model: str = "qwen/qwen3.8-27b"
 
     # Auth
     jwt_secret_key: str = "change-me"

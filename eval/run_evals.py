@@ -1,34 +1,40 @@
-# Ragas runner: runs every eval_dataset.jsonl row through the real chat chain,
-# checks RBAC/refusal behavior deterministically, scores answerable rows with
-# Ragas, and saves one self-describing results file per run (manifest + summary +
-# ops + failures + per-row scores). Exits non-zero on any hard-gate failure or
-# unscored row. Eval phase.
+# Eval runner: runs every eval_dataset.jsonl row through the real chat chain and
+# saves one self-describing results file per run (manifest + summary + ops +
+# failures + per-row results). Eval phase.
+#
+#   Layer B (always): RBAC-leak and refusal/out-of-scope checks — hard gates.
+#   Tier 2  (always): must_contain facts in each answer -> PASS / PARTIAL / FAIL.
+#                     Deterministic, no judge LLM, so it fits the free tier.
+#   Ragas   (--ragas): LLM-judged metrics. Expensive; use at milestones only.
+#
+#   venv/bin/python -m eval.run_evals            # Layer B + Tier 2
+#   venv/bin/python -m eval.run_evals --ragas    # ... plus Ragas
+#
+# Exits non-zero on any Layer B failure, or (with --ragas) any unscored row.
+# Tier 2 misses are quality results, not gates, so they don't fail the run.
+import argparse
 import hashlib
 import inspect
 import json
 import math
 import os
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
 os.environ["LANGCHAIN_PROJECT"] = "rag-chatbot-rbac-evals"   # before app imports; load_dotenv won't override it
 
+import pandas as pd
 import psycopg
-from langchain_groq import ChatGroq
-from ragas import evaluate, EvaluationDataset, SingleTurnSample
-from ragas.run_config import RunConfig
-from ragas.llms import LangchainLLMWrapper
-from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.metrics import LLMContextRecall, Faithfulness, FactualCorrectness
 
 from app.core.config import get_settings
 from app.core.roles import allowed_categories
 from app.ingestion.chunking import chunk_overlap, chunk_size
 from app.monitoring.cost_tracker import ensure_table
 from app.rag.chain import answer_question
-from app.rag.retriever import RETRIEVAL_STRATEGY, get_relevant_documents, hf, vectorstore
+from app.rag.retriever import RETRIEVAL_STRATEGY, get_relevant_documents, vectorstore
+
+from eval.checks import git_state, must_contain_hits
 
 EVAL_DIR = Path(__file__).parent
 PROJECT_ROOT = EVAL_DIR.parent
@@ -42,24 +48,7 @@ def is_decline(answer: str) -> bool:
     return "i don't have" in answer.lower()
 
 
-def git_state() -> dict:
-    def git(*args: str) -> str | None:
-        try:
-            return subprocess.run(
-                ["git", *args], cwd=PROJECT_ROOT, capture_output=True, text=True, check=True
-            ).stdout.strip()
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            return None
-
-    return {
-        "commit": git("rev-parse", "HEAD"),  # None until the repo has a first commit
-        # Only modified tracked files count: untracked files (e.g. the previous
-        # run's results JSON) don't change what the code does.
-        "dirty": bool(git("status", "--porcelain", "--untracked-files=no")),
-    }
-
-
-def build_manifest(run_id: str, dataset_bytes: bytes, n_rows: int) -> dict:
+def build_manifest(run_id: str, dataset_bytes: bytes, n_rows: int, use_ragas: bool) -> dict:
     return {
         "run_id": run_id,
         "git": git_state(),
@@ -70,7 +59,7 @@ def build_manifest(run_id: str, dataset_bytes: bytes, n_rows: int) -> dict:
             "retriever_k": inspect.signature(get_relevant_documents).parameters["k"].default,
             "embedding_model": settings.embedding_model,
             "answer_model": settings.groq_model,
-            "judge_model": JUDGE_MODEL,
+            "judge_model": JUDGE_MODEL if use_ragas else None,   # None = no LLM judge ran
         },
         # chunk_size above is read from the code; this is read from the index.
         # If you change chunk_size but this count doesn't move, you forgot to
@@ -94,6 +83,73 @@ def nan_to_none(obj):
     if isinstance(obj, float) and math.isnan(obj):
         return None
     return obj
+
+
+def grade(row: dict, answer: str) -> dict:
+    """Tier 2: which of the row's must_contain facts appear in the answer."""
+    hits = must_contain_hits(row["must_contain"], answer)
+    if all(hits):
+        verdict = "PASS"
+    elif any(hits):
+        verdict = "PARTIAL"
+    else:
+        verdict = "FAIL"
+    return {
+        "verdict": verdict,
+        "score": sum(hits) / len(hits),
+        "missing": [m for m, h in zip(row["must_contain"], hits) if not h],
+        # A refusal is a FAIL either way; flagging it separately tells a retrieval
+        # miss ("I don't have that") apart from a wrong answer ("4 employees").
+        "refused": is_decline(answer),
+    }
+
+
+def tier2_per_tag(graded: pd.DataFrame) -> pd.DataFrame:
+    per_tag = graded.groupby("tag").agg(
+        n=("id", "size"),
+        pass_=("verdict", lambda v: int((v == "PASS").sum())),
+        partial=("verdict", lambda v: int((v == "PARTIAL").sum())),
+        fail=("verdict", lambda v: int((v == "FAIL").sum())),
+        refused=("refused", "sum"),
+        pass_rate=("verdict", lambda v: (v == "PASS").mean()),
+        mean_score=("score", "mean"),
+    ).round(3)
+    return per_tag.rename(columns={"pass_": "pass"})
+
+
+def run_ragas(samples: list[dict]) -> pd.DataFrame:
+    """LLM-judged metrics, keyed by row id. Imported lazily so Tier 2-only runs
+    don't need ragas (or its judge quota) at all."""
+    from langchain_groq import ChatGroq
+    from ragas import EvaluationDataset, SingleTurnSample, evaluate
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+    from ragas.llms import LangchainLLMWrapper
+    from ragas.metrics import FactualCorrectness, Faithfulness, LLMContextRecall
+    from ragas.run_config import RunConfig
+
+    from app.rag.retriever import hf
+
+    judge = LangchainLLMWrapper(ChatGroq(model=JUDGE_MODEL, api_key=settings.groq_api_key, temperature=0, reasoning_effort="low"))
+    result = evaluate(
+        dataset=EvaluationDataset(samples=[
+            SingleTurnSample(
+                user_input=s["question"],
+                response=s["answer"],
+                retrieved_contexts=s["contexts"],
+                reference=s["reference"],
+            )
+            for s in samples
+        ]),
+        metrics=[LLMContextRecall(), Faithfulness(), FactualCorrectness()],
+        llm=judge,
+        embeddings=LangchainEmbeddingsWrapper(hf),
+        run_config=RunConfig(max_workers=1, timeout=180, max_retries=5),
+    )
+    df = result.to_pandas()
+    metrics = [c for c in df.columns if df[c].dtype.kind in "fi"]
+    df = df[metrics]
+    df.insert(0, "id", [s["id"] for s in samples])
+    return df
 
 
 def db_now(conn) -> datetime:
@@ -131,19 +187,23 @@ def ops_summary(conn, started_at: datetime, ended_at: datetime) -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ragas", action="store_true", help="also run LLM-judged Ragas metrics")
+    args = parser.parse_args()
+
     RESULTS_DIR.mkdir(exist_ok=True)
     run_id = datetime.now().strftime("%Y%m%d-%H%M%S")
 
     dataset_bytes = DATASET_PATH.read_bytes()
     rows = [json.loads(line) for line in dataset_bytes.decode().splitlines() if line.strip()]
-    manifest = build_manifest(run_id, dataset_bytes, len(rows))
+    manifest = build_manifest(run_id, dataset_bytes, len(rows), args.ragas)
 
     ensure_table()   # eval never goes through main.py, so migrate the cost_log schema here too
     with psycopg.connect(settings.database_url, autocommit=True) as conn:
         started_at = db_now(conn)
 
     failures = []   # Layer B hard-gate failures
-    samples, sample_rows = [], []
+    answered = []   # one record per answer row: its answer, Tier 2 grade, and what Ragas needs
 
     for row in rows:
         result = answer_question(row["question"], row["role"])
@@ -158,65 +218,89 @@ def main() -> int:
         if row["expected_behavior"] in ("refuse", "out_of_scope") and not is_decline(result["answer"]):
             failures.append({"id": row["id"], "check": row["expected_behavior"], "detail": "got an answer"})
 
-        # Layer A input: only answerable rows go to Ragas
         if row["expected_behavior"] == "answer":
-            samples.append(SingleTurnSample(
-                user_input=row["question"],
-                response=result["answer"],
-                retrieved_contexts=[c["text"] for c in result["contexts"]],
-                reference=row["reference"],
-            ))
-            sample_rows.append(row)
+            answered.append({
+                "id": row["id"],
+                "tag": row["tag"],
+                "question": row["question"],
+                "reference": row["reference"],
+                "answer": result["answer"],
+                "sources": result["sources"],
+                "contexts": [c["text"] for c in result["contexts"]],
+                **grade(row, result["answer"]),   # Tier 2
+            })
 
     with psycopg.connect(settings.database_url, autocommit=True) as conn:
         ended_at = db_now(conn)
         ops = ops_summary(conn, started_at, ended_at)
 
-    judge = LangchainLLMWrapper(ChatGroq(model=JUDGE_MODEL, api_key=settings.groq_api_key, temperature=0, reasoning_effort="low"))
-    ragas_result = evaluate(
-        dataset=EvaluationDataset(samples=samples),
-        metrics=[LLMContextRecall(), Faithfulness(), FactualCorrectness()],
-        llm=judge,
-        embeddings=LangchainEmbeddingsWrapper(hf),
-        run_config=RunConfig(max_workers=1, timeout=180, max_retries=5),
-    )
-    df = ragas_result.to_pandas()
-    df["tag"] = [r["tag"] for r in sample_rows]
-    df["id"] = [r["id"] for r in sample_rows]
-
-    metrics = [c for c in df.columns if df[c].dtype.kind in "fi"]
-    per_tag = df.groupby("tag")[metrics].mean().round(3)
-    per_tag.insert(0, "n", df.groupby("tag").size())
-    nan_counts = {m: int(df[m].isna().sum()) for m in metrics}
-
+    graded = pd.DataFrame(answered)
+    t2_per_tag = tier2_per_tag(graded)
     summary = {
-        "overall": {m: round(float(df[m].mean()), 3) for m in metrics},
-        "per_tag": per_tag.reset_index().to_dict(orient="records"),
-        "unscored": nan_counts,
+        "tier2": {
+            "overall": {
+                "n": len(graded),
+                "pass": int((graded["verdict"] == "PASS").sum()),
+                "partial": int((graded["verdict"] == "PARTIAL").sum()),
+                "fail": int((graded["verdict"] == "FAIL").sum()),
+                "refused": int(graded["refused"].sum()),
+                "pass_rate": round(float((graded["verdict"] == "PASS").mean()), 3),
+                "mean_score": round(float(graded["score"].mean()), 3),
+            },
+            "per_tag": t2_per_tag.reset_index().to_dict(orient="records"),
+        },
         "layer_b": {"rows_checked": len(rows), "failures": len(failures)},
     }
+
+    nan_counts = {}
+    ragas_per_tag = None
+    results = graded
+    if args.ragas:
+        ragas_df = run_ragas(answered)
+        metrics = [c for c in ragas_df.columns if c != "id"]
+        results = graded.merge(ragas_df, on="id", how="left")
+        ragas_per_tag = results.groupby("tag")[metrics].mean().round(3)
+        ragas_per_tag.insert(0, "n", results.groupby("tag").size())
+        nan_counts = {m: int(results[m].isna().sum()) for m in metrics}
+        summary["ragas"] = {
+            "overall": {m: round(float(results[m].mean()), 3) for m in metrics},
+            "per_tag": ragas_per_tag.reset_index().to_dict(orient="records"),
+            "unscored": nan_counts,
+        }
 
     out = {
         "manifest": manifest,
         "summary": summary,
         "ops": ops,
         "failures": failures,
-        "results": df.to_dict(orient="records"),
+        "results": results.to_dict(orient="records"),
     }
     out_path = RESULTS_DIR / f"{run_id}.json"
     # allow_nan=False: fail loudly rather than ever write bare NaN (invalid JSON)
     out_path.write_text(json.dumps(nan_to_none(out), indent=2, default=str, allow_nan=False))
 
-    print(f"\nRun {run_id} · commit {manifest['git']['commit'] or 'none'}"
+    print(f"\nRun {run_id} · commit {(manifest['git']['commit'] or 'none')[:7]}"
           f"{' (dirty)' if manifest['git']['dirty'] else ''} · {manifest['config']}")
-    print(per_tag.to_string())
+    t2 = summary["tier2"]["overall"]
+    print(f"\nTier 2 (must_contain): {t2['pass']} PASS · {t2['partial']} PARTIAL · {t2['fail']} FAIL"
+          f" ({t2['refused']} refused) of {t2['n']} · pass_rate {t2['pass_rate']} · mean_score {t2['mean_score']}")
+    print(t2_per_tag.to_string())
+    for r in answered:
+        if r["verdict"] != "PASS":
+            why = "refused" if r["verdict"] == "FAIL" and r["refused"] else f"missing {r['missing']}"
+            if r["verdict"] == "PARTIAL" and r["refused"]:
+                why += " (declined the rest)"
+            print(f"  {r['verdict']:7} {r['id']:9} {why}")
+    if ragas_per_tag is not None:
+        print("\nRagas:")
+        print(ragas_per_tag.to_string())
+        if any(nan_counts.values()):
+            print(f"UNSCORED rows (judge failures — rescore before trusting averages): {nan_counts}")
     print(f"\nLayer B: {len(failures)} failure(s) across {len(rows)} rows")
     for f in failures:
         print("  FAIL:", f)
     print(f"Ops: {ops['llm_requests']} LLM requests · ${ops['total_cost_usd']:.6f} total · "
           f"avg {ops['avg_latency_ms']} ms · p95 {ops['p95_latency_ms']} ms")
-    if any(nan_counts.values()):
-        print(f"UNSCORED rows (judge failures — rescore before trusting averages): {nan_counts}")
     print(f"Saved {out_path.relative_to(PROJECT_ROOT)}")
 
     return 1 if failures or any(nan_counts.values()) else 0

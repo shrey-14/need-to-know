@@ -1,0 +1,711 @@
+{
+  "manifest": {
+    "run_id": "20260928-222308",
+    "git": {
+      "commit": "8992c52b6347a95c2629d2697dfd06ef98420bee",
+      "dirty": true
+    },
+    "config": {
+      "retrieval_strategy": "dense",
+      "chunk_size": 250,
+      "chunk_overlap": 30,
+      "retriever_k": 5,
+      "embedding_model": "BAAI/bge-base-en-v1.5",
+      "answer_model": "openai/gpt-oss-120b",
+      "judge_model": null
+    },
+    "index_chunk_count": 603,
+    "dataset": {
+      "path": "eval/eval_dataset.jsonl",
+      "sha256": "9537e4eb3d74e06bc0ec8b24183ec678369424da6f0f76edc74a94d6fa5dd0ba",
+      "rows": 30
+    }
+  },
+  "summary": {
+    "tier2": {
+      "overall": {
+        "n": 24,
+        "pass": 8,
+        "partial": 5,
+        "fail": 11,
+        "refused": 10,
+        "pass_rate": 0.333,
+        "mean_score": 0.432
+      },
+      "per_tag": [
+        {
+          "tag": "aggregate",
+          "n": 5,
+          "pass": 0,
+          "partial": 1,
+          "fail": 4,
+          "refused": 2,
+          "pass_rate": 0.0,
+          "mean_score": 0.05
+        },
+        {
+          "tag": "entity_typo",
+          "n": 3,
+          "pass": 2,
+          "partial": 0,
+          "fail": 1,
+          "refused": 1,
+          "pass_rate": 0.667,
+          "mean_score": 0.667
+        },
+        {
+          "tag": "multi_chunk",
+          "n": 2,
+          "pass": 0,
+          "partial": 1,
+          "fail": 1,
+          "refused": 1,
+          "pass_rate": 0.0,
+          "mean_score": 0.357
+        },
+        {
+          "tag": "multi_doc",
+          "n": 3,
+          "pass": 0,
+          "partial": 2,
+          "fail": 1,
+          "refused": 2,
+          "pass_rate": 0.0,
+          "mean_score": 0.3
+        },
+        {
+          "tag": "single_fact",
+          "n": 11,
+          "pass": 6,
+          "partial": 1,
+          "fail": 4,
+          "refused": 4,
+          "pass_rate": 0.545,
+          "mean_score": 0.591
+        }
+      ]
+    },
+    "layer_b": {
+      "rows_checked": 30,
+      "failures": 0
+    }
+  },
+  "ops": {
+    "window": [
+      "2026-09-28T21:23:09.365338+00:00",
+      "2026-09-28T21:24:45.999507+00:00"
+    ],
+    "llm_requests": 27,
+    "prompt_tokens": 17257,
+    "completion_tokens": 3884,
+    "total_cost_usd": 0.00491895,
+    "cost_per_request_usd": 0.00018218333333333333,
+    "avg_latency_ms": 3122,
+    "p95_latency_ms": 8175
+  },
+  "failures": [],
+  "results": [
+    {
+      "id": "sf-01",
+      "tag": "single_fact",
+      "question": "What was FinSolve's total revenue in 2024?",
+      "reference": "FinSolve Technologies' total revenue in 2024 was $9.4 billion, a 28% year-over-year increase.",
+      "answer": "FinSolve Technologies reported total revenue of **$9.4\u202fbillion** in 2024. [Source: quarterly_financial_report.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/financial_summary.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/quarterly_financial_report.md"
+      ],
+      "contexts": [
+        "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+        "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+        "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+        "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global",
+        "2024 marked a year of both opportunity and challenge for FinSolve Technologies. Despite a robust revenue increase, we saw significant pressure in certain expense categories, notably vendor-related costs and software subscriptions. However, these"
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-02",
+      "tag": "single_fact",
+      "question": "What was FinSolve's net income in Q2 2024?",
+      "reference": "Net income in Q2 2024 was $275 million, up 12% year-over-year.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/financial_summary.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/quarterly_financial_report.md"
+      ],
+      "contexts": [
+        "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+        "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+        "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+        "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global",
+        "2024 marked a year of both opportunity and challenge for FinSolve Technologies. Despite a robust revenue increase, we saw significant pressure in certain expense categories, notably vendor-related costs and software subscriptions. However, these"
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "275 million"
+      ],
+      "refused": true
+    },
+    {
+      "id": "sf-03",
+      "tag": "single_fact",
+      "question": "What was the customer acquisition cost in 2024?",
+      "reference": "The customer acquisition cost in 2024 was $150 per new customer, down from $180 in 2023.",
+      "answer": "The Customer Acquisition Cost (CAC) for 2024 was **$150 per new customer**. [Source: marketing_report_2024.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/market_report_q4_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q1_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q2_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q3_2024.md"
+      ],
+      "contexts": [
+        "Our projections for Q4 2024 were ambitious yet grounded in historical performance and market analysis. The key targets were:  \n- **Customer Acquisition Target**: 220,000 new customers",
+        "Key Metrics & KPIs:\n-------------------------------------------\n1. **Customer Acquisition Cost (CAC)**: $150 per new customer (down from $180 in 2023), reflecting more efficient targeting and optimization of ad spend.",
+        "Our Q2 2024 targets were designed to drive growth in new and existing markets while maintaining cost efficiency. The key projections were:  \n- **Customer Acquisition Target**: 200,000 new customers",
+        "Our Q1 2024 targets were designed to kickstart the year with momentum, balancing aggressive acquisition goals with efficient resource allocation. The key projections were:  \n- **Customer Acquisition Target**: 150,000 new customers",
+        "Our Q3 2024 targets were designed to balance growth in new markets with the retention of existing customers. The key projections were:  \n- **Customer Acquisition Target**: 180,000 new customers"
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-04",
+      "tag": "single_fact",
+      "question": "What was the marketing spend in Q3 2024?",
+      "reference": "Marketing spend in Q3 2024 was $2 million.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/market_report_q4_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q2_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q3_2024.md"
+      ],
+      "contexts": [
+        "The Q4 2024 marketing efforts were pivotal in solidifying our market position, enhancing customer engagement, and setting the stage for robust growth in the upcoming year. This report provides a detailed analysis of our marketing strategies,",
+        "Based on Q3 performance, we propose the following strategies for Q4 2024:  \n1. **Optimize Latin American Campaigns**: Increase ad spend by 15% in Colombia to address underperformance and achieve acquisition targets.",
+        "Based on Q2 performance, we propose the following strategies for Q3 2024:  \n1. **Deepen Southeast Asia Penetration**: Increase ad spend by 10% in Thailand to address competitive challenges and meet acquisition targets.",
+        "In Q4 2024, our marketing strategy centered on three core pillars: finalizing market penetration in key demographics, fostering stronger customer relationships through personalized engagement, and laying the groundwork for sustained growth in 2025.",
+        "Q4 2024 was a transformative quarter for our marketing efforts, with significant strides in customer acquisition, revenue growth, and brand loyalty. By aligning our strategies with market opportunities and leveraging data-driven insights, we"
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        [
+          "2 million",
+          "$2m"
+        ]
+      ],
+      "refused": true
+    },
+    {
+      "id": "sf-05",
+      "tag": "single_fact",
+      "question": "What is the leave balance of Aadhya Patel?",
+      "reference": "Aadhya Patel has a leave balance of 22 days.",
+      "answer": "Aadhya Patel has a leave balance of **22 days**\u3010Source: hr_data.csv\u3011.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Aadhya Patel (employee ID FINEMP1000) works as a Sales Manager in the Sales department (manager ID FINEMP1006), based in Ahmedabad. Their personal details includes their email address: aadhya.patel@fintechco.com, and their date of birth is 1991-04-03. They joined on 2018-11-20 and earn a salary of \u20b91,332,478.37. They have leave balance of 22 days and have taken 11 leaves so far, with an attendance rate of 99.31%. Their latest performance rating is 3, last reviewed on 2024-05-21.",
+        "Aadhya Singh (employee ID FINEMP1043) works as a Sales Manager in the Sales department (manager ID FINEMP1000), based in Pune. Their personal details includes their email address: aadhya.singh@fintechco.com, and their date of birth is 1984-05-24. They joined on 2024-06-02 and earn a salary of \u20b9849,227.01. They have leave balance of 17 days and have taken 14 leaves so far, with an attendance rate of 91.97%. Their latest performance rating is 4, last reviewed on 2024-02-16.",
+        "Aadhya Chowdhury (employee ID FINEMP1008) works as a Customer Support in the Operations department (manager ID FINEMP1007), based in Mumbai. Their personal details includes their email address: aadhya.chowdhury@fintechco.com, and their date of birth is 1977-06-18. They joined on 2019-02-12 and earn a salary of \u20b9370,315.98. They have leave balance of 7 days and have taken 5 leaves so far, with an attendance rate of 96.92%. Their latest performance rating is 5, last reviewed on 2024-08-07.",
+        "Aditya Patel (employee ID FINEMP1029) works as a Data Analyst in the Data department (manager ID FINEMP1009), based in Pune. Their personal details includes their email address: aditya.patel@fintechco.com, and their date of birth is 1997-06-28. They joined on 2020-01-17 and earn a salary of \u20b91,128,053.06. They have leave balance of 23 days and have taken 11 leaves so far, with an attendance rate of 97.48%. Their latest performance rating is 2, last reviewed on 2025-02-21.",
+        "Aadhya Kapoor (employee ID FINEMP1063) works as a Risk Analyst in the Risk department (manager ID FINEMP1004), based in Jaipur. Their personal details includes their email address: aadhya.kapoor@fintechco.com, and their date of birth is 1991-07-10. They joined on 2021-10-27 and earn a salary of \u20b91,833,641.20. They have leave balance of 8 days and have taken 1 leaves so far, with an attendance rate of 85.81%. Their latest performance rating is 2, last reviewed on 2024-06-29."
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-06",
+      "tag": "single_fact",
+      "question": "Which databases does FinSolve use in its data layer?",
+      "reference": "FinSolve's data layer uses PostgreSQL for transactional data, MongoDB for user profiles and metadata, Redis for caching and session management, and Amazon S3 for documents and backups.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/engineering/engineering_master_doc.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "FinSolve's architecture is a microservices-based, cloud-native system designed for scalability, resilience, and security. It leverages a modular design to support rapid feature development and seamless integration with third-party financial systems",
+        "FinSolve Technologies is a leading FinTech company headquartered in Bangalore, India, with operations across North America, Europe, and Asia-Pacific. Founded in 2018, FinSolve provides innovative financial solutions, including digital banking,",
+        "Founded in 2016, FinSolve Technologies is a leading player in fintech with a presence across India and global markets. We are committed to ethical business, social responsibility, and fostering a culture of learning and growth.  \n---",
+        "FinSolve follows a Scrum-based Agile process with 2-week sprints:",
+        "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "S3"
+      ],
+      "refused": true
+    },
+    {
+      "id": "sf-07",
+      "tag": "single_fact",
+      "question": "What deployment strategy is used for production?",
+      "reference": "Production uses scheduled bi-weekly deployments with a blue-green deployment strategy, automated smoke tests after deployment, and automated rollback on failure.",
+      "answer": "The production environment uses a **blue\u2011green deployment strategy**. \u3010Source: engineering_master_doc.md\u3011",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/engineering/engineering_master_doc.md"
+      ],
+      "contexts": [
+        "* **Staging Environment**:\n* Automatic deployment from the `develop` branch\n* Full test suite execution\n* Performance testing\n* **Production Environment**:\n* Scheduled deployments (bi-weekly)\n* Blue-green deployment strategy",
+        "* Jenkins for build orchestration\n* ArgoCD for GitOps-based deployment\n* Nexus Repository for artifact storage\n* Prometheus and Grafana for deployment monitoring",
+        "* Tool: Git (hosted on GitHub Enterprise)\n* Branch Strategy: Gitflow\n* `main`: Production-ready code\n* `develop`: Integration branch for features\n* `feature/*`: New features and non-emergency fixes\n* `release/*`: Release preparation",
+        "* Scheduled bi-weekly\n* Require manual approval\n* Use blue-green or canary deployment strategies",
+        "This document covers:  \n* System architecture and infrastructure\n* Software development lifecycle (SDLC)\n* Technology stack\n* Security and compliance frameworks\n* Testing and quality assurance methodologies\n* Deployment and DevOps practices"
+      ],
+      "verdict": "PARTIAL",
+      "score": 0.5,
+      "missing": [
+        [
+          "bi-weekly",
+          "biweekly",
+          "every two weeks"
+        ]
+      ],
+      "refused": false
+    },
+    {
+      "id": "sf-08",
+      "tag": "single_fact",
+      "question": "What are the company's core values?",
+      "reference": "FinSolve's core values are Integrity, Respect, Innovation, Customer Focus, and Accountability.",
+      "answer": "The company's core values are:\n\n- Integrity  \n- Respect  \n- Innovation  \n- Customer Focus  \n- Accountability  \n\n[Source: employee_handbook.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "- **Integrity**: We act with honesty and transparency.\n- **Respect**: We value diversity and treat everyone with dignity.\n- **Innovation**: We encourage creativity and continuous improvement.",
+        "- Treat all colleagues, clients, and vendors with respect and courtesy.\n- Maintain a positive, inclusive, and harassment-free environment.\n- Uphold confidentiality of company information at all times.",
+        "- **Customer Focus**: Our customers are at the heart of everything we do.\n- **Accountability**: We take responsibility for our actions and results.",
+        "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders.",
+        "- Provided as per statutory requirements and company policy."
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-09",
+      "tag": "single_fact",
+      "question": "How many days per week can I work from home?",
+      "reference": "Eligible roles can work from home up to 2 days per week, with manager approval.",
+      "answer": "You may work from home up to\u202f2\u202fdays per week, pending manager and business approval.\u202f[Source: employee_handbook.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "**Q: Can I work from home?**\nA: Up to 2 days/week, subject to manager and business approval.  \n---",
+        "| **Public Holidays** | 10-14 days/year (as per company calendar and state notifications) |\n| **Leave Without Pay** | Allowed with approval after exhausting paid leave |",
+        "- Up to 2 days/week for eligible roles; must be approved by manager.\n- Must be reachable and available during core work hours.",
+        "| **Sick Leave** | 12 days/year (non-cumulative; medical certificate for >2 days) |\n| **Casual Leave** | 7 days/year (state-specific) |\n| **Maternity Leave** | 26 weeks (first two children); 12 weeks for subsequent children |",
+        "- **Standard Hours**: 9 hours/day (including 1 hour break), 6 days/week or 8 hours/day, 5 days/week (as per company policy).\n- **Flexible Timings**: Allowed for eligible roles, subject to manager approval."
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-10",
+      "tag": "single_fact",
+      "question": "When was FinSolve Technologies founded?",
+      "reference": "FinSolve Technologies was founded in 2016.",
+      "answer": "FinSolve Technologies was founded in 2016. \u3010Source: employee_handbook.md\u3011",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "Founded in 2016, FinSolve Technologies is a leading player in fintech with a presence across India and global markets. We are committed to ethical business, social responsibility, and fostering a culture of learning and growth.  \n---",
+        "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders.",
+        "---  \n**Note**: This handbook is a living document and may be updated periodically. For policy clarifications or state-specific rules, please consult HR or refer to the company\u2019s policy portal.",
+        "- Access to online learning platforms (Coursera, Udemy, etc.).\n- Sponsorship for industry certifications (e.g., PMP, AWS).",
+        "- Processed within 30-60 days of exit, including leave encashment and statutory dues.  \n---"
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "sf-11",
+      "tag": "single_fact",
+      "question": "Which compliance frameworks does FinSolve follow?",
+      "reference": "FinSolve complies with the Digital Personal Data Protection Act 2023 (DPDP), the General Data Protection Regulation (GDPR), and PCI-DSS Level 1 for payment processing.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/engineering/engineering_master_doc.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/financial_summary.md"
+      ],
+      "contexts": [
+        "4. **Risk: Regulatory Compliance** \u2013 As the company expands globally, navigating complex regulatory landscapes in different regions may introduce compliance risks. FinSolve Technologies must invest in **legal and compliance teams** to ensure",
+        "FinSolve's architecture is a microservices-based, cloud-native system designed for scalability, resilience, and security. It leverages a modular design to support rapid feature development and seamless integration with third-party financial systems",
+        "FinSolve follows a Scrum-based Agile process with 2-week sprints:",
+        "- *Industry Benchmark*: 10%\n- FinSolve Technologies\u2019s stable net margin indicates sound control over both direct and indirect costs, though further improvement is possible with better vendor management.  \n3. **Return on Investment (ROI)**: 15%",
+        "3. **Risk: Operational Scalability** \u2013 As FinSolve Technologies scales, maintaining operational efficiency will become more challenging. This can be mitigated by investing in automation, streamlining workflows, and maintaining a leaner"
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        [
+          "DPDP",
+          "Digital Personal Data Protection"
+        ],
+        [
+          "GDPR",
+          "General Data Protection Regulation"
+        ],
+        [
+          "PCI-DSS",
+          "PCI DSS"
+        ]
+      ],
+      "refused": true
+    },
+    {
+      "id": "agg-01",
+      "tag": "aggregate",
+      "question": "How many employees are working in FinSolve Technologies?",
+      "reference": "FinSolve Technologies has 100 employees.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Founded in 2016, FinSolve Technologies is a leading player in fintech with a presence across India and global markets. We are committed to ethical business, social responsibility, and fostering a culture of learning and growth.  \n---",
+        "At FinSolve Technologies, our vision is to empower businesses and individuals through innovative technology solutions. Our mission is to deliver high-quality, sustainable products and services that create value for our stakeholders.",
+        "Ishaan Patel (employee ID FINEMP1012) works as a Security Engineer in the Technology department (manager ID FINEMP1007), based in Hyderabad. Their personal details includes their email address: ishaan.patel@fintechco.com, and their date of birth is 1977-08-20. They joined on 2021-03-14 and earn a salary of \u20b91,703,783.22. They have leave balance of 13 days and have taken 1 leaves so far, with an attendance rate of 97.57%. Their latest performance rating is 3, last reviewed on 2024-11-28.",
+        "Reyansh Mehta (employee ID FINEMP1024) works as a Security Engineer in the Technology department (manager ID FINEMP1001), based in Delhi. Their personal details includes their email address: reyansh.mehta@fintechco.com, and their date of birth is 1994-12-19. They joined on 2023-03-23 and earn a salary of \u20b9611,560.84. They have leave balance of 29 days and have taken 8 leaves so far, with an attendance rate of 91.43%. Their latest performance rating is 2, last reviewed on 2025-01-17.",
+        "Vihaan Reddy (employee ID FINEMP1040) works as a QA Engineer in the Quality Assurance department (manager ID FINEMP1006), based in Hyderabad. Their personal details includes their email address: vihaan.reddy@fintechco.com, and their date of birth is 1985-02-08. They joined on 2021-04-23 and earn a salary of \u20b91,039,818.46. They have leave balance of 8 days and have taken 7 leaves so far, with an attendance rate of 94.28%. Their latest performance rating is 3, last reviewed on 2024-03-24."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "100"
+      ],
+      "refused": true
+    },
+    {
+      "id": "agg-02",
+      "tag": "aggregate",
+      "question": "How many employees are in the Sales department?",
+      "reference": "There are 15 employees in the Sales department.",
+      "answer": "There are four employees listed in the Sales department\u202f\u2014\u202fArjun Mehta, Krishna Verma, Vihaan Garg, and Aadhya Patel\u202f[Source: hr_data.csv].",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Arjun Mehta (employee ID FINEMP1060) works as a Sales Manager in the Sales department (manager ID FINEMP1007), based in Bengaluru. Their personal details includes their email address: arjun.mehta@fintechco.com, and their date of birth is 1985-08-27. They joined on 2020-11-05 and earn a salary of \u20b91,258,070.34. They have leave balance of 6 days and have taken 0 leaves so far, with an attendance rate of 98.75%. Their latest performance rating is 4, last reviewed on 2024-09-21.",
+        "Krishna Verma (employee ID FINEMP1020) works as a Sales Manager in the Sales department (manager ID FINEMP1007), based in Mumbai. Their personal details includes their email address: krishna.verma@fintechco.com, and their date of birth is 1978-06-25. They joined on 2024-11-29 and earn a salary of \u20b9969,422.69. They have leave balance of 24 days and have taken 13 leaves so far, with an attendance rate of 94.35%. Their latest performance rating is 1, last reviewed on 2024-09-14.",
+        "Vihaan Garg (employee ID FINEMP1037) works as a Sales Manager in the Sales department (manager ID FINEMP1001), based in Jaipur. Their personal details includes their email address: vihaan.garg@fintechco.com, and their date of birth is 1986-08-12. They joined on 2023-02-05 and earn a salary of \u20b9403,990.23. They have leave balance of 19 days and have taken 19 leaves so far, with an attendance rate of 99.74%. Their latest performance rating is 5, last reviewed on 2024-01-10.",
+        "Aadhya Patel (employee ID FINEMP1000) works as a Sales Manager in the Sales department (manager ID FINEMP1006), based in Ahmedabad. Their personal details includes their email address: aadhya.patel@fintechco.com, and their date of birth is 1991-04-03. They joined on 2018-11-20 and earn a salary of \u20b91,332,478.37. They have leave balance of 22 days and have taken 11 leaves so far, with an attendance rate of 99.31%. Their latest performance rating is 3, last reviewed on 2024-05-21.",
+        "- **Standard Hours**: 9 hours/day (including 1 hour break), 6 days/week or 8 hours/day, 5 days/week (as per company policy).\n- **Flexible Timings**: Allowed for eligible roles, subject to manager approval."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "15"
+      ],
+      "refused": false
+    },
+    {
+      "id": "agg-03",
+      "tag": "aggregate",
+      "question": "Who are the employees in the HR department?",
+      "reference": "The HR department has 4 employees: Vihaan Chowdhury, Ananya Singh, Aditya Saxena, and Ananya Nair.",
+      "answer": "Ananya\u202fNair\u202f(employee\u202fID\u202fFINEMP1092) works as a HR\u202fManager in the HR department\u3010Source: hr_data.csv\u3011.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "- May occur due to misconduct, underperformance, redundancy, or business needs.\n- HR will provide written communication and explanation.",
+        "- Approval from reporting manager and HR required for all leave requests.\n- Leave balance can be viewed on the HRMS portal.",
+        "- Conductspice by HR to gather feedback and suggestions.",
+        "- Report all accidents, injuries, or near-misses to HR and Safety Officer immediately.\n- First aid kits and emergency contact numbers available at all locations.",
+        "Ananya Nair (employee ID FINEMP1092) works as a HR Manager in the HR department (manager ID FINEMP1003), based in Hyderabad. Their personal details includes their email address: ananya.nair@fintechco.com, and their date of birth is 1997-11-12. They joined on 2019-11-25 and earn a salary of \u20b9512,211.07. They have leave balance of 4 days and have taken 4 leaves so far, with an attendance rate of 85.19%. Their latest performance rating is 3, last reviewed on 2024-05-18."
+      ],
+      "verdict": "PARTIAL",
+      "score": 0.25,
+      "missing": [
+        "Vihaan Chowdhury",
+        "Ananya Singh",
+        "Aditya Saxena"
+      ],
+      "refused": false
+    },
+    {
+      "id": "agg-04",
+      "tag": "aggregate",
+      "question": "How many employees have a performance rating of 5?",
+      "reference": "23 employees have a performance rating of 5.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "5. [Code of Conduct & Workplace Behavior](#code-of-conduct--workplace-behavior)\n6. [Health & Safety](#health--safety)\n7. [Compensation & Payroll](#compensation--payroll)\n8. [Reimbursement Policies](#reimbursement-policies)",
+        "- **Frequency**: Annual and mid-year reviews.\n- **Criteria**: Based on KPIs, goals, competencies, and values.\n- **Process**: Self-assessment, manager feedback, calibration.",
+        "- Annual performance-based increments.\n- Market adjustments and promotions as per company policy.  \n---",
+        "- Conductspice by HR to gather feedback and suggestions.",
+        "- Treat all colleagues, clients, and vendors with respect and courtesy.\n- Maintain a positive, inclusive, and harassment-free environment.\n- Uphold confidentiality of company information at all times."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "23"
+      ],
+      "refused": true
+    },
+    {
+      "id": "agg-05",
+      "tag": "aggregate",
+      "question": "How many employees are based in Mumbai?",
+      "reference": "10 employees are based in Mumbai.",
+      "answer": "There are four employees based in Mumbai (Shaurya\u202fJoshi, Krishna\u202fVerma, Vihaan\u202fChopra, and Shaurya\u202fSharma)\u202f[Source: hr_data.csv].",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Shaurya Joshi (employee ID FINEMP1041) works as a Relationship Manager in the Sales department (manager ID FINEMP1000), based in Mumbai. Their personal details includes their email address: shaurya.joshi@fintechco.com, and their date of birth is 1995-01-15. They joined on 2023-06-15 and earn a salary of \u20b91,703,490.23. They have leave balance of 7 days and have taken 6 leaves so far, with an attendance rate of 90.84%. Their latest performance rating is 1, last reviewed on 2024-07-30.",
+        "If you travel to Mumbai for a client meeting, book your ticket through the company portal, keep all receipts, and submit your claim within 30 days for reimbursement.  \n---",
+        "Krishna Verma (employee ID FINEMP1020) works as a Sales Manager in the Sales department (manager ID FINEMP1007), based in Mumbai. Their personal details includes their email address: krishna.verma@fintechco.com, and their date of birth is 1978-06-25. They joined on 2024-11-29 and earn a salary of \u20b9969,422.69. They have leave balance of 24 days and have taken 13 leaves so far, with an attendance rate of 94.35%. Their latest performance rating is 1, last reviewed on 2024-09-14.",
+        "Vihaan Chopra (employee ID FINEMP1074) works as a Relationship Manager in the Sales department (manager ID FINEMP1005), based in Mumbai. Their personal details includes their email address: vihaan.chopra@fintechco.com, and their date of birth is 1996-03-28. They joined on 2024-09-10 and earn a salary of \u20b91,938,308.68. They have leave balance of 6 days and have taken 5 leaves so far, with an attendance rate of 92.42%. Their latest performance rating is 3, last reviewed on 2025-04-12.",
+        "Shaurya Sharma (employee ID FINEMP1093) works as a Product Manager in the Product department (manager ID FINEMP1002), based in Mumbai. Their personal details includes their email address: shaurya.sharma@fintechco.com, and their date of birth is 1976-10-18. They joined on 2024-07-28 and earn a salary of \u20b91,325,752.20. They have leave balance of 12 days and have taken 9 leaves so far, with an attendance rate of 93.73%. Their latest performance rating is 5, last reviewed on 2024-01-31."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "10"
+      ],
+      "refused": false
+    },
+    {
+      "id": "multi-01",
+      "tag": "multi_doc",
+      "question": "What was the marketing budget in 2024, and how was it broken down?",
+      "reference": "The total marketing budget in 2024 was $15 million, allocated as: Digital Marketing $7M (47%), Event Marketing $3M (20%), Public Relations and Brand Awareness $2M (13%), Customer Retention $1M (7%), and Market Research and Analytics $2M (13%).",
+      "answer": "The total marketing budget for 2024 was **$15\u202fmillion**. The breakdown provided includes **Digital Marketing**, which received **$7\u202fmillion** (47% of the total) and focused on paid ads, influencer campaigns, and digital content.\u202f[Source: marketing_report_2024.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/market_report_q4_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q3_2024.md"
+      ],
+      "contexts": [
+        "Marketing Budget Breakdown:\n-------------------------------------------\nIn 2024, the total marketing budget was $15M, allocated as follows:  \n1. **Digital Marketing**: $7M (47%) \u2013 Focused on paid ads, influencer campaigns, and digital content.",
+        "In Q4 2024, our marketing strategy centered on three core pillars: finalizing market penetration in key demographics, fostering stronger customer relationships through personalized engagement, and laying the groundwork for sustained growth in 2025.",
+        "Customer Insights:\n-------------------------------------------\nThe Marketing Department's success in 2024 can largely be attributed to its focus on understanding and engaging key customer segments. Key insights include:",
+        "The Q4 2024 marketing efforts were pivotal in solidifying our market position, enhancing customer engagement, and setting the stage for robust growth in the upcoming year. This report provides a detailed analysis of our marketing strategies,",
+        "Based on Q3 performance, we propose the following strategies for Q4 2024:  \n1. **Optimize Latin American Campaigns**: Increase ad spend by 15% in Colombia to address underperformance and achieve acquisition targets."
+      ],
+      "verdict": "PARTIAL",
+      "score": 0.4,
+      "missing": [
+        [
+          "$3m",
+          "$3 million"
+        ],
+        [
+          "$1m",
+          "$1 million"
+        ],
+        [
+          "$2m",
+          "$2 million"
+        ]
+      ],
+      "refused": false
+    },
+    {
+      "id": "multi-02",
+      "tag": "multi_doc",
+      "question": "What was the marketing spend in each quarter of 2024?",
+      "reference": "Marketing spend was $2 million in Q1, $2.5 million in Q2, $2 million in Q3, and $2.5 million in Q4 2024.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/market_report_q4_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_2024.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/marketing/marketing_report_q2_2024.md"
+      ],
+      "contexts": [
+        "Q4 2024 was a transformative quarter for our marketing efforts, with significant strides in customer acquisition, revenue growth, and brand loyalty. By aligning our strategies with market opportunities and leveraging data-driven insights, we",
+        "The Q4 2024 marketing efforts were pivotal in solidifying our market position, enhancing customer engagement, and setting the stage for robust growth in the upcoming year. This report provides a detailed analysis of our marketing strategies,",
+        "Marketing Budget Breakdown:\n-------------------------------------------\nIn 2024, the total marketing budget was $15M, allocated as follows:  \n1. **Digital Marketing**: $7M (47%) \u2013 Focused on paid ads, influencer campaigns, and digital content.",
+        "In Q4 2024, our marketing strategy centered on three core pillars: finalizing market penetration in key demographics, fostering stronger customer relationships through personalized engagement, and laying the groundwork for sustained growth in 2025.",
+        "Q2 2024 was a dynamic quarter that strengthened our brand in existing markets and marked significant progress in Southeast Asia. Our focus on influencer partnerships, email retargeting, and localized campaigns delivered measurable results,"
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        [
+          "2 million",
+          "$2m"
+        ],
+        [
+          "2.5 million",
+          "$2.5m"
+        ]
+      ],
+      "refused": true
+    },
+    {
+      "id": "multi-03",
+      "tag": "multi_doc",
+      "question": "What was FinSolve's total revenue in 2024, and what was the customer acquisition cost?",
+      "reference": "FinSolve's total revenue in 2024 was $9.4 billion, and the customer acquisition cost was $150 per new customer.",
+      "answer": "FinSolve Technologies reported total revenue of\u202f$9.4\u202fbillion for 2024\u202f[Source: quarterly_financial_report.md].\n\nI don't have that information regarding the customer acquisition cost.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/financial_summary.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/quarterly_financial_report.md"
+      ],
+      "contexts": [
+        "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+        "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+        "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+        "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global",
+        "2024 marked a year of both opportunity and challenge for FinSolve Technologies. Despite a robust revenue increase, we saw significant pressure in certain expense categories, notably vendor-related costs and software subscriptions. However, these"
+      ],
+      "verdict": "PARTIAL",
+      "score": 0.5,
+      "missing": [
+        "$150"
+      ],
+      "refused": true
+    },
+    {
+      "id": "mc-01",
+      "tag": "multi_chunk",
+      "question": "What is the company's leave policy?",
+      "reference": "Leave entitlements are: Privilege/Annual Leave 15-21 days/year accrued monthly; Sick Leave 12 days/year (non-cumulative, medical certificate needed for more than 2 days); Casual Leave 7 days/year; Maternity Leave 26 weeks for the first two children and 12 weeks for subsequent children; Paternity Leave 7-15 days; Bereavement Leave 3-7 days for immediate family; Compensatory Off for work on holidays/weekends with manager approval; Public Holidays 10-14 days/year; and Leave Without Pay allowed with approval after exhausting paid leave.",
+      "answer": "- **Privilege/Annual leave:** 15\u201321\u202fdays per year (accrued monthly) as per the state Shops\u202f&\u202fEstablishments Act.\u202f[Source: employee_handbook.md]  \n- **Paternity leave:** 7\u201315\u202fdays (company policy; not statutory).\u202f[Source: employee_handbook.md]  \n- **Bereavement leave:** 3\u20137\u202fdays for immediate family (company policy).\u202f[Source: employee_handbook.md]  \n- **Compensatory off:** Granted for work on holidays/weekends; requires manager approval.\u202f[Source: employee_handbook.md]  \n- **Public holidays:** 10\u201314\u202fdays per year (company calendar and state notifications).\u202f[Source: employee_handbook.md]  \n- **Leave without pay:** Allowed with approval after all paid leave is exhausted.\u202f[Source: employee_handbook.md]  \n\n**Procedures & Requirements**  \n- All leave requests must be approved by the reporting manager and HR.\u202f[Source: employee_handbook.md]  \n- Leave balance can be viewed on the HRMS portal.\u202f[Source: employee_handbook.md]  \n- Requests should be submitted via the HRMS/leave portal at least\u202f3\u202fdays in advance (except emergencies).\u202f[Source: employee_handbook.md]  \n- Sick leave exceeding\u202f2\u202fdays requires a medical certificate.\u202f[Source: employee_handbook.md]  \n- Emergency leave must be communicated to the manager/HR as soon as possible.\u202f[Source: employee_handbook.md]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/general/employee_handbook.md"
+      ],
+      "contexts": [
+        "| **Paternity Leave** | 7-15 days (company policy; not statutory) |\n| **Bereavement Leave** | 3-7 days for immediate family (company policy) |\n| **Compensatory Off** | For work on holidays/weekends (manager approval required) |",
+        "| **Public Holidays** | 10-14 days/year (as per company calendar and state notifications) |\n| **Leave Without Pay** | Allowed with approval after exhausting paid leave |",
+        "| Leave Type | Entitlement/Details |\n|------------|---------------------|\n| **Privilege/Annual** | 15-21 days/year (as per state Shops & Establishments Act); accrued monthly |",
+        "- Approval from reporting manager and HR required for all leave requests.\n- Leave balance can be viewed on the HRMS portal.",
+        "- Apply via HRMS/leave portal at least 3 days in advance (except emergencies).\n- Sick leave for more than 2 days requires a medical certificate.\n- Emergency leave to be communicated to manager/HR as soon as possible."
+      ],
+      "verdict": "PARTIAL",
+      "score": 0.7142857142857143,
+      "missing": [
+        "12 days",
+        "26 weeks"
+      ],
+      "refused": false
+    },
+    {
+      "id": "mc-02",
+      "tag": "multi_chunk",
+      "question": "What was FinSolve's revenue in each quarter of 2024?",
+      "reference": "FinSolve's revenue was $2.1 billion in Q1, $2.3 billion in Q2, $2.4 billion in Q3, and $2.6 billion in Q4 2024.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/financial_summary.md",
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/finance/quarterly_financial_report.md"
+      ],
+      "contexts": [
+        "FinSolve Technologies Inc. achieved remarkable financial results in 2024, with total revenue of $9.4 billion, a 28% YoY increase. Gross margin improved from 58% in Q1 to 64% in Q4, reflecting enhanced pricing strategies and operational efficiencies.",
+        "FinSolve Technologies's revenue grew by 25% in 2024, driven largely by the global expansion of its services, especially in Asia and Europe. This was accompanied by a 10% increase in vendor-related expenses, impacting overall profit margins. While",
+        "In 2024, FinSolve Technologies Inc. delivered exceptional financial performance, achieving significant year-over-year (YoY) growth across all quarters. With a strategic focus on market expansion, customer acquisition, and operational efficiency, the",
+        "overview of FinSolve Technologies\u2019s financial results, expense breakdowns, cash flow analyses, and risk mitigation strategies for each quarter of 2024, underscoring our commitment to sustainable growth and shareholder value.",
+        "FinSolve Technologies Inc.\u2019s 2024 performance reflects our strategic focus on growth, efficiency, and customer-centric innovation. With record-breaking revenue, improved margins, and strong cash flow, we are well-positioned to capitalize on global"
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "2.1 billion",
+        "2.3 billion",
+        "2.4 billion",
+        "2.6 billion"
+      ],
+      "refused": true
+    },
+    {
+      "id": "typo-01",
+      "tag": "entity_typo",
+      "question": "What is Arav Kapoor's role?",
+      "reference": "Aarav Kapoor is a UX Designer in the Design department.",
+      "answer": "Aarav Kapoor works as a UX Designer. [Source: hr_data.csv]",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Aarav Kapoor (employee ID FINEMP1094) works as a UX Designer in the Design department (manager ID FINEMP1007), based in Lucknow. Their personal details includes their email address: aarav.kapoor@fintechco.com, and their date of birth is 1994-12-04. They joined on 2023-06-29 and earn a salary of \u20b91,373,465.39. They have leave balance of 24 days and have taken 2 leaves so far, with an attendance rate of 91.59%. Their latest performance rating is 2, last reviewed on 2024-10-23.",
+        "Aadhya Kapoor (employee ID FINEMP1063) works as a Risk Analyst in the Risk department (manager ID FINEMP1004), based in Jaipur. Their personal details includes their email address: aadhya.kapoor@fintechco.com, and their date of birth is 1991-07-10. They joined on 2021-10-27 and earn a salary of \u20b91,833,641.20. They have leave balance of 8 days and have taken 1 leaves so far, with an attendance rate of 85.81%. Their latest performance rating is 2, last reviewed on 2024-06-29.",
+        "Aditya Kapoor (employee ID FINEMP1057) works as a Marketing Manager in the Marketing department (manager ID FINEMP1006), based in Lucknow. Their personal details includes their email address: aditya.kapoor@fintechco.com, and their date of birth is 1979-10-19. They joined on 2022-04-22 and earn a salary of \u20b91,641,119.13. They have leave balance of 10 days and have taken 1 leaves so far, with an attendance rate of 92.5%. Their latest performance rating is 2, last reviewed on 2024-06-07.",
+        "Sakshi Kapoor (employee ID FINEMP1097) works as a Marketing Manager in the Marketing department (manager ID FINEMP1000), based in Bengaluru. Their personal details includes their email address: sakshi.kapoor@fintechco.com, and their date of birth is 1995-09-14. They joined on 2018-02-10 and earn a salary of \u20b91,468,652.84. They have leave balance of 18 days and have taken 14 leaves so far, with an attendance rate of 94.91%. Their latest performance rating is 2, last reviewed on 2024-05-14.",
+        "Aarav Joshi (employee ID FINEMP1089) works as a Security Engineer in the Technology department (manager ID FINEMP1003), based in Lucknow. Their personal details includes their email address: aarav.joshi@fintechco.com, and their date of birth is 1977-05-07. They joined on 2021-03-01 and earn a salary of \u20b9330,010.27. They have leave balance of 4 days and have taken 4 leaves so far, with an attendance rate of 82.24%. Their latest performance rating is 1, last reviewed on 2024-10-29."
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    },
+    {
+      "id": "typo-02",
+      "tag": "entity_typo",
+      "question": "What is the leave balance of Isha Chaudhary?",
+      "reference": "There are two employees named Isha Chowdhury: FINEMP1001 (Credit Officer, Finance) has a leave balance of 8 days, and FINEMP1019 (Relationship Manager, Sales) has 11 days.",
+      "answer": "I don't have that information.",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Isha Chowdhury (employee ID FINEMP1019) works as a Relationship Manager in the Sales department (manager ID FINEMP1000), based in Lucknow. Their personal details includes their email address: isha.chowdhury@fintechco.com, and their date of birth is 1985-08-21. They joined on 2019-03-06 and earn a salary of \u20b9443,210.71. They have leave balance of 11 days and have taken 3 leaves so far, with an attendance rate of 87.92%. Their latest performance rating is 5, last reviewed on 2024-12-20.",
+        "Isha Singh (employee ID FINEMP1048) works as a Financial Analyst in the Finance department (manager ID FINEMP1008), based in Delhi. Their personal details includes their email address: isha.singh@fintechco.com, and their date of birth is 1994-10-22. They joined on 2023-03-26 and earn a salary of \u20b91,386,670.96. They have leave balance of 14 days and have taken 7 leaves so far, with an attendance rate of 98.85%. Their latest performance rating is 3, last reviewed on 2024-07-31.",
+        "Isha Sharma (employee ID FINEMP1053) works as a Customer Support in the Operations department (manager ID FINEMP1002), based in Kolkata. Their personal details includes their email address: isha.sharma@fintechco.com, and their date of birth is 1991-12-07. They joined on 2020-11-08 and earn a salary of \u20b91,502,270.01. They have leave balance of 7 days and have taken 7 leaves so far, with an attendance rate of 91.65%. Their latest performance rating is 5, last reviewed on 2024-05-12.",
+        "Isha Chowdhury (employee ID FINEMP1001) works as a Credit Officer in the Finance department (manager ID FINEMP1005), based in Pune. Their personal details includes their email address: isha.chowdhury@fintechco.com, and their date of birth is 1995-09-21. They joined on 2021-05-20 and earn a salary of \u20b91,491,158.23. They have leave balance of 8 days and have taken 3 leaves so far, with an attendance rate of 85.15%. Their latest performance rating is 5, last reviewed on 2024-01-20.",
+        "Isha Desai (employee ID FINEMP1044) works as a Software Engineer in the Technology department (manager ID FINEMP1008), based in Chennai. Their personal details includes their email address: isha.desai@fintechco.com, and their date of birth is 1988-12-22. They joined on 2021-12-03 and earn a salary of \u20b9667,541.44. They have leave balance of 9 days and have taken 1 leaves so far, with an attendance rate of 88.61%. Their latest performance rating is 5, last reviewed on 2024-09-13."
+      ],
+      "verdict": "FAIL",
+      "score": 0.0,
+      "missing": [
+        "8",
+        "11"
+      ],
+      "refused": true
+    },
+    {
+      "id": "typo-03",
+      "tag": "entity_typo",
+      "question": "Which department does Myra Gupt work in?",
+      "reference": "Myra Gupta is a QA Engineer in the Quality Assurance department.",
+      "answer": "Myra Gupta works in the Quality Assurance department. \u3010Source: hr_data.csv\u3011",
+      "sources": [
+        "/Users/shreypatel/Documents/RAG Chatbot with RBAC/data/hr/hr_data.csv"
+      ],
+      "contexts": [
+        "Myra Garg (employee ID FINEMP1065) works as a Blockchain Developer in the Technology department (manager ID FINEMP1004), based in Lucknow. Their personal details includes their email address: myra.garg@fintechco.com, and their date of birth is 1989-05-09. They joined on 2019-03-28 and earn a salary of \u20b91,947,873.28. They have leave balance of 6 days and have taken 2 leaves so far, with an attendance rate of 81.24%. Their latest performance rating is 2, last reviewed on 2024-10-03.",
+        "Myra Gupta (employee ID FINEMP1050) works as a QA Engineer in the Quality Assurance department (manager ID FINEMP1008), based in Lucknow. Their personal details includes their email address: myra.gupta@fintechco.com, and their date of birth is 1982-10-12. They joined on 2021-02-01 and earn a salary of \u20b9865,633.34. They have leave balance of 25 days and have taken 6 leaves so far, with an attendance rate of 97.9%. Their latest performance rating is 1, last reviewed on 2024-05-17.",
+        "Myra Desai (employee ID FINEMP1027) works as a Security Engineer in the Technology department (manager ID FINEMP1009), based in Ahmedabad. Their personal details includes their email address: myra.desai@fintechco.com, and their date of birth is 1978-10-20. They joined on 2019-02-25 and earn a salary of \u20b91,710,679.64. They have leave balance of 4 days and have taken 2 leaves so far, with an attendance rate of 96.01%. Their latest performance rating is 1, last reviewed on 2024-06-08.",
+        "Prisha Chopra (employee ID FINEMP1078) works as a Data Analyst in the Data department (manager ID FINEMP1001), based in Lucknow. Their personal details includes their email address: prisha.chopra@fintechco.com, and their date of birth is 1981-03-18. They joined on 2023-08-01 and earn a salary of \u20b91,438,958.04. They have leave balance of 24 days and have taken 1 leaves so far, with an attendance rate of 90.49%. Their latest performance rating is 2, last reviewed on 2024-02-28.",
+        "Sara Sharma (employee ID FINEMP1006) works as a QA Engineer in the Quality Assurance department (manager ID FINEMP1004), based in Delhi. Their personal details includes their email address: sara.sharma@fintechco.com, and their date of birth is 1989-12-26. They joined on 2021-05-15 and earn a salary of \u20b9660,681.91. They have leave balance of 11 days and have taken 10 leaves so far, with an attendance rate of 96.49%. Their latest performance rating is 2, last reviewed on 2024-02-26."
+      ],
+      "verdict": "PASS",
+      "score": 1.0,
+      "missing": [],
+      "refused": false
+    }
+  ]
+}

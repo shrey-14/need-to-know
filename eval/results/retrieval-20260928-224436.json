@@ -1,0 +1,458 @@
+{
+  "manifest": {
+    "run_id": "20260928-224436",
+    "kind": "retrieval_check",
+    "git": {
+      "commit": "8992c52b6347a95c2629d2697dfd06ef98420bee",
+      "dirty": true
+    },
+    "config": {
+      "retrieval_strategy": "dense",
+      "chunk_size": 250,
+      "chunk_overlap": 30,
+      "retriever_k": 8,
+      "embedding_model": "BAAI/bge-base-en-v1.5"
+    },
+    "index_chunk_count": 603,
+    "dataset": {
+      "path": "eval/eval_dataset.jsonl",
+      "sha256": "9537e4eb3d74e06bc0ec8b24183ec678369424da6f0f76edc74a94d6fa5dd0ba",
+      "rows_checked": 20,
+      "rows_skipped_no_evidence": [
+        "agg-01",
+        "agg-02",
+        "agg-04",
+        "agg-05"
+      ]
+    }
+  },
+  "summary": {
+    "overall": {
+      "evidence_recall": 0.625,
+      "complete": 0.5
+    },
+    "per_tag": [
+      {
+        "tag": "aggregate",
+        "n": 1,
+        "evidence_recall": 0.5,
+        "complete": 0.0
+      },
+      {
+        "tag": "entity_typo",
+        "n": 3,
+        "evidence_recall": 1.0,
+        "complete": 1.0
+      },
+      {
+        "tag": "multi_chunk",
+        "n": 2,
+        "evidence_recall": 0.333,
+        "complete": 0.0
+      },
+      {
+        "tag": "multi_doc",
+        "n": 3,
+        "evidence_recall": 0.278,
+        "complete": 0.0
+      },
+      {
+        "tag": "single_fact",
+        "n": 11,
+        "evidence_recall": 0.682,
+        "complete": 0.636
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sf-01",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md"
+      ]
+    },
+    {
+      "id": "sf-02",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Net Income: $275 million"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md"
+      ]
+    },
+    {
+      "id": "sf-03",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "market_report_q4_2024.md",
+        "marketing_report_2024.md",
+        "marketing_report_q2_2024.md",
+        "marketing_report_q1_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q1_2024.md",
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md"
+      ]
+    },
+    {
+      "id": "sf-04",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        {
+          "text": "$2 million",
+          "source": "marketing_report_q3_2024.md"
+        }
+      ],
+      "retrieved_sources": [
+        "market_report_q4_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q2_2024.md",
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q3_2024.md"
+      ]
+    },
+    {
+      "id": "sf-05",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "sf-06",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "employee_handbook.md",
+        "engineering_master_doc.md",
+        "employee_handbook.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md"
+      ]
+    },
+    {
+      "id": "sf-07",
+      "tag": "single_fact",
+      "evidence_recall": 0.5,
+      "complete": false,
+      "missing": [
+        "Automated rollback on failure"
+      ],
+      "retrieved_sources": [
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md"
+      ]
+    },
+    {
+      "id": "sf-08",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-09",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-10",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-11",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Digital Personal Data Protection Act",
+        "General Data Protection Regulation",
+        "PCI-DSS"
+      ],
+      "retrieved_sources": [
+        "financial_summary.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "financial_summary.md",
+        "financial_summary.md",
+        "employee_handbook.md",
+        "marketing_report_2024.md",
+        "engineering_master_doc.md"
+      ]
+    },
+    {
+      "id": "agg-03",
+      "tag": "aggregate",
+      "evidence_recall": 0.5,
+      "complete": false,
+      "missing": [
+        "Vihaan Chowdhury (employee ID FINEMP1010)",
+        "Aditya Saxena (employee ID FINEMP1055)"
+      ],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "hr_data.csv",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "multi-01",
+      "tag": "multi_doc",
+      "evidence_recall": 0.3333333333333333,
+      "complete": false,
+      "missing": [
+        "Event Marketing: $3M",
+        "Public Relations and Brand Awareness: $2M",
+        "Customer Retention: $1M",
+        "Market Research and Analytics: $2M"
+      ],
+      "retrieved_sources": [
+        "marketing_report_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q2_2024.md",
+        "marketing_report_q1_2024.md",
+        "market_report_q4_2024.md"
+      ]
+    },
+    {
+      "id": "multi-02",
+      "tag": "multi_doc",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        {
+          "text": "$2 million",
+          "source": "marketing_report_q1_2024.md"
+        },
+        {
+          "text": "$2.5 million",
+          "source": "marketing_report_q2_2024.md"
+        },
+        {
+          "text": "$2 million",
+          "source": "marketing_report_q3_2024.md"
+        },
+        {
+          "text": "$2.5 million",
+          "source": "market_report_q4_2024.md"
+        }
+      ],
+      "retrieved_sources": [
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q2_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q2_2024.md",
+        "marketing_report_2024.md"
+      ]
+    },
+    {
+      "id": "multi-03",
+      "tag": "multi_doc",
+      "evidence_recall": 0.5,
+      "complete": false,
+      "missing": [
+        "Customer Acquisition Cost (CAC): $150"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "marketing_report_2024.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md"
+      ]
+    },
+    {
+      "id": "mc-01",
+      "tag": "multi_chunk",
+      "evidence_recall": 0.6666666666666666,
+      "complete": false,
+      "missing": [
+        "Sick Leave 12 days/year",
+        "Casual Leave 7 days/year",
+        "Maternity Leave 26 weeks"
+      ],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "mc-02",
+      "tag": "multi_chunk",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Revenue: $2.1 billion",
+        "Revenue: $2.3 billion",
+        "Revenue: $2.4 billion",
+        "Revenue: $2.6 billion"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md"
+      ]
+    },
+    {
+      "id": "typo-01",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "typo-02",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "typo-03",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    }
+  ]
+}
