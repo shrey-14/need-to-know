@@ -84,12 +84,12 @@ Ragas isn't a headline metric. A full run exceeds the Groq free-tier daily token
 | | |
 |---|---|
 | Date | 2026-09-28 |
-| Commit | `8992c52` + uncommitted eval-harness changes (**dirty**). See the note below. |
+| Commit | `8992c52` + uncommitted eval-harness changes (**dirty**), since committed as `745d963`. See the note below. |
 | Results | Tier 1: `eval/results/retrieval-20260928-223035.json` · Tier 2: `eval/results/20260928-223536.json` (+ repeat `20260928-222308.json`) |
 | Dataset | sha256 `9537e4eb…a5dd0ba`: 30 rows (24 answer, 4 refuse, 2 out_of_scope) |
 | Compared against | — |
 
-> **Dirty-run note:** all three runs are marked `dirty`. The uncommitted changes were the eval harness itself (`eval/checks.py`, `eval/retrieval_check.py`, `eval/run_evals.py`, the dataset's new `evidence`/`must_contain` fields) and an unused `qwen_model` setting in `app/core/config.py`. None of them touch the answering pipeline under test, so the numbers stand. Replace the commit above with the hash of the commit that contains these files.
+> **Dirty-run note:** all three runs are marked `dirty`. The uncommitted changes were the eval harness itself (`eval/checks.py`, `eval/retrieval_check.py`, `eval/run_evals.py`, the dataset's new `evidence`/`must_contain` fields) and an unused `qwen_model` setting in `app/core/config.py`. None of them touch the answering pipeline under test, so the numbers stand.
 
 **Config** (from the manifest):
 
@@ -149,3 +149,79 @@ That's about $0.00017 per request, with 17.8k prompt and 3.6k completion tokens 
 - **The source data contradicts itself:** the 2024 marketing budget is $15M in `marketing_report_2024.md` but "$2.3 billion" in `quarterly_financial_report.md`, and the founding year is 2016 in the handbook but 2018 in the engineering doc. The references follow the role-visible source.
 
 **Decision:** baseline for EXP-001 onward.
+
+---
+
+## EXP-001 — Larger chunks (250/30 → 800/150)
+
+| | |
+|---|---|
+| Date | 2026-10-03 |
+| Commit | `34a882b` |
+| Results | Tier 1: `eval/results/retrieval-20261003-133510.json` (k=5) · `retrieval-20261003-132554.json` (k=15, exploratory) · Tier 2: `eval/results/20261003-132828.json` |
+| Dataset | sha256 `9537e4eb…a5dd0ba` (same as EXP-000) |
+| Compared against | EXP-000 |
+
+**Hypothesis / prediction:** not written down before the run. The working expectation from the EXP-000 analysis was:
+- 250-character chunks separate figures from their labels (sf-02's "Net Income: $275 million" chunk doesn't contain "Q2").
+- Larger chunks should therefore recover sf-02, sf-04, mc-02 and the multi_doc rows.
+- entity_typo should stay at 1.0.
+- Overall evidence recall should rise above 0.70.
+
+**Change:**
+- `app/ingestion/chunking.py`: `chunk_size` 250 → 800, `chunk_overlap` 30 → 150.
+- `app/ingestion/build_index.py`: the collection is now deleted before re-indexing. Without this, re-chunking left stale chunks in place. The index went from 603 to **334 chunks**, and `--validate` reports 0 unreachable evidence items.
+- Everything else is unchanged: dense retrieval, k=5, same models.
+
+> **Discarded run:** `20261003-130409.json` was run before the `build_index` fix. Its index still reported 603 chunks: 128 new large chunks mixed with about 375 stale 250-character ones. It isn't cited here.
+
+> **Tier 1 k=5 run** is marked `dirty` only because a tracked results JSON (the discarded run) was deleted. No code differed from `34a882b`. Tier 2 is clean (`dirty: false`).
+
+**Results** (k=5):
+
+| Tag | n (T1/T2) | Evidence recall | Δ | Pass rate | Δ | Mean score (T2) | Δ |
+|---|---|---|---|---|---|---|---|
+| single_fact | 11/11 | 0.636 | +0.045 | 0.545 | 0 | 0.591 | 0 |
+| aggregate | 1/5 | 0.250 | 0 | 0.000 | 0 | 0.050 | 0 |
+| multi_doc | 3/3 | 0.417 | +0.139 | 0.000 | 0 | 0.367 | +0.067 |
+| multi_chunk | 2/2 | 0.500 | +0.167 | 0.500 | +0.500 | 0.500 | +0.143 |
+| entity_typo | 3/3 | 1.000 | 0 | 0.667 | 0 | 0.667 | 0 |
+| **overall** | 20/24 | **0.625** | **+0.063** | **0.375** | **+0.042** | 0.452 | +0.020 |
+
+Tier 2 overall: 9 PASS / 4 PARTIAL / 11 FAIL (10 refused), against 8 / 5 / 11 (10 refused) in EXP-000.
+
+**Rows that flipped:**
+
+| Row | Tier 1 evidence recall | Tier 2 verdict | Note |
+|---|---|---|---|
+| sf-04 | 0 → 1.0 | FAIL → **PASS** | The "Q3" label and the "$2 million" figure now share a chunk, as predicted. |
+| mc-01 | 0.67 → 1.0 | PARTIAL → **PASS** | The full leave table now arrives intact. |
+| sf-07 | 0.5 → 1.0 | PARTIAL → PARTIAL | Retrieval is complete now, but the answer still omits "bi-weekly". This is a generation issue, not retrieval. |
+| multi-01 | 0.33 → 0.5 | PARTIAL (0.4 → 0.6) | 3 of 5 budget lines, up from 2. |
+| multi-02 | 0 → 0.25 | FAIL → FAIL | One quarter retrieved; the model still refuses. |
+| **sf-03** | **1.0 → 0** | **PASS → FAIL** | **Regression.** The 2024 CAC chunk is now outranked by the four quarterly reports' "targets" chunks, which all discuss customer acquisition. The CAC line is diluted inside a larger chunk. |
+
+**Layer B:** 0 failures / 30 rows.
+
+**Ops:**
+
+| | EXP-000 | EXP-001 | Δ |
+|---|---|---|---|
+| Prompt tokens per run | 17,828 | 22,599 | +27% |
+| Cost per request | $0.000173 | $0.000207 | +20% |
+| Total cost per run | $0.004857 | $0.005806 | +20% |
+| Avg / p95 latency | 2196 / 6446 ms | 3775 / 9221 ms | +1.6 s / +2.8 s |
+
+The latency increase is partly noise: EXP-000's repeat run averaged 3122 ms. The token increase is real and expected, since each of the 5 chunks is larger.
+
+**Observations:**
+- **Larger chunks bring the right evidence closer to the top, but not into the top 5.** At k=15, evidence recall is **0.838** (0.692 at 250/30). sf-02, sf-06, multi-02 and mc-02 have their evidence in ranks 6–15 but miss the top 5. So the relevant chunk is now *retrieved* but *ranked too low*, which is exactly what a reranker over a wider candidate pool fixes.
+- **sf-11 (compliance frameworks) is missing even at k=15.** That fits an exact-term problem (DPDP, GDPR, PCI-DSS), so hybrid BM25 is the likely fix.
+- **Bigger chunks dilute specific facts (sf-03).** A one-line KPI inside an 800-character chunk competes with chunks that are entirely about the same topic. Hybrid search would also help here, since "Customer Acquisition Cost" is an exact phrase.
+- **The net Tier 2 gain is small:** +1 row (2 gained, 1 lost), and the row-level noise floor is about 1 row. Tier 1 shows a clearer gain (+0.063 at k=5, +0.146 at k=15).
+- Aggregates are unchanged, as expected; chunking can't count rows.
+
+**Decision:** **keep 800/150** as the chunking for the following experiments:
+- Retrieval improved at both k values, multi_chunk improved, and the one regression has an identified cause that the next experiments target.
+- Next: **EXP-002 hybrid BM25 + RRF**, targeting sf-02, sf-03, sf-06 and sf-11.
+- Then **EXP-003 reranker** over a k≈15–20 hybrid pool, targeting the rank 6–15 evidence.

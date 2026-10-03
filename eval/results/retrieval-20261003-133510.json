@@ -1,0 +1,390 @@
+{
+  "manifest": {
+    "run_id": "20261003-133510",
+    "kind": "retrieval_check",
+    "git": {
+      "commit": "34a882b0b0cdf04048dbcd47ebb8f0d82e66db03",
+      "dirty": true
+    },
+    "config": {
+      "retrieval_strategy": "dense",
+      "chunk_size": 800,
+      "chunk_overlap": 150,
+      "retriever_k": 5,
+      "embedding_model": "BAAI/bge-base-en-v1.5"
+    },
+    "index_chunk_count": 334,
+    "dataset": {
+      "path": "eval/eval_dataset.jsonl",
+      "sha256": "9537e4eb3d74e06bc0ec8b24183ec678369424da6f0f76edc74a94d6fa5dd0ba",
+      "rows_checked": 20,
+      "rows_skipped_no_evidence": [
+        "agg-01",
+        "agg-02",
+        "agg-04",
+        "agg-05"
+      ]
+    }
+  },
+  "summary": {
+    "overall": {
+      "evidence_recall": 0.625,
+      "complete": 0.55
+    },
+    "per_tag": [
+      {
+        "tag": "aggregate",
+        "n": 1,
+        "evidence_recall": 0.25,
+        "complete": 0.0
+      },
+      {
+        "tag": "entity_typo",
+        "n": 3,
+        "evidence_recall": 1.0,
+        "complete": 1.0
+      },
+      {
+        "tag": "multi_chunk",
+        "n": 2,
+        "evidence_recall": 0.5,
+        "complete": 0.5
+      },
+      {
+        "tag": "multi_doc",
+        "n": 3,
+        "evidence_recall": 0.417,
+        "complete": 0.0
+      },
+      {
+        "tag": "single_fact",
+        "n": 11,
+        "evidence_recall": 0.636,
+        "complete": 0.636
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sf-01",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "financial_summary.md"
+      ]
+    },
+    {
+      "id": "sf-02",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Net Income: $275 million"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "financial_summary.md"
+      ]
+    },
+    {
+      "id": "sf-03",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Customer Acquisition Cost (CAC): $150 per new customer"
+      ],
+      "retrieved_sources": [
+        "market_report_q4_2024.md",
+        "marketing_report_q3_2024.md",
+        "marketing_report_q2_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q1_2024.md"
+      ]
+    },
+    {
+      "id": "sf-04",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "marketing_report_q3_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q2_2024.md",
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md"
+      ]
+    },
+    {
+      "id": "sf-05",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "sf-06",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "PostgreSQL",
+        "MongoDB",
+        "Redis",
+        "Amazon S3"
+      ],
+      "retrieved_sources": [
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "employee_handbook.md",
+        "engineering_master_doc.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-07",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md"
+      ]
+    },
+    {
+      "id": "sf-08",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-09",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-10",
+      "tag": "single_fact",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "sf-11",
+      "tag": "single_fact",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Digital Personal Data Protection Act",
+        "General Data Protection Regulation",
+        "PCI-DSS"
+      ],
+      "retrieved_sources": [
+        "financial_summary.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "engineering_master_doc.md",
+        "financial_summary.md"
+      ]
+    },
+    {
+      "id": "agg-03",
+      "tag": "aggregate",
+      "evidence_recall": 0.25,
+      "complete": false,
+      "missing": [
+        "Vihaan Chowdhury (employee ID FINEMP1010)",
+        "Ananya Singh (employee ID FINEMP1015)",
+        "Aditya Saxena (employee ID FINEMP1055)"
+      ],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "multi-01",
+      "tag": "multi_doc",
+      "evidence_recall": 0.5,
+      "complete": false,
+      "missing": [
+        "Public Relations and Brand Awareness: $2M",
+        "Customer Retention: $1M",
+        "Market Research and Analytics: $2M"
+      ],
+      "retrieved_sources": [
+        "marketing_report_2024.md",
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q2_2024.md",
+        "marketing_report_q2_2024.md"
+      ]
+    },
+    {
+      "id": "multi-02",
+      "tag": "multi_doc",
+      "evidence_recall": 0.25,
+      "complete": false,
+      "missing": [
+        {
+          "text": "$2 million",
+          "source": "marketing_report_q1_2024.md"
+        },
+        {
+          "text": "$2.5 million",
+          "source": "marketing_report_q2_2024.md"
+        },
+        {
+          "text": "$2 million",
+          "source": "marketing_report_q3_2024.md"
+        }
+      ],
+      "retrieved_sources": [
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md",
+        "market_report_q4_2024.md",
+        "marketing_report_q2_2024.md",
+        "marketing_report_q2_2024.md"
+      ]
+    },
+    {
+      "id": "multi-03",
+      "tag": "multi_doc",
+      "evidence_recall": 0.5,
+      "complete": false,
+      "missing": [
+        "Customer Acquisition Cost (CAC): $150"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "financial_summary.md"
+      ]
+    },
+    {
+      "id": "mc-01",
+      "tag": "multi_chunk",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md",
+        "employee_handbook.md"
+      ]
+    },
+    {
+      "id": "mc-02",
+      "tag": "multi_chunk",
+      "evidence_recall": 0.0,
+      "complete": false,
+      "missing": [
+        "Revenue: $2.1 billion",
+        "Revenue: $2.3 billion",
+        "Revenue: $2.4 billion",
+        "Revenue: $2.6 billion"
+      ],
+      "retrieved_sources": [
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "quarterly_financial_report.md",
+        "financial_summary.md",
+        "financial_summary.md"
+      ]
+    },
+    {
+      "id": "typo-01",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "typo-02",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    },
+    {
+      "id": "typo-03",
+      "tag": "entity_typo",
+      "evidence_recall": 1.0,
+      "complete": true,
+      "missing": [],
+      "retrieved_sources": [
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv",
+        "hr_data.csv"
+      ]
+    }
+  ]
+}
