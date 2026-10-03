@@ -21,6 +21,15 @@ hf = HuggingFaceEmbeddings(
 if __name__ == "__main__":
     chunks = chunk_documents()
     ids = [chunk.metadata["chunk_id"] for chunk in chunks]
+
+    # Drop the old collection first: upserting by id would leave stale chunks
+    # behind whenever re-chunking produces fewer ids than before.
+    Chroma(
+        persist_directory=settings.chroma_persist_dir,
+        collection_name="finsolve_docs",
+        embedding_function=hf,
+    ).delete_collection()
+
     vectorstore = Chroma.from_documents(
         documents=chunks,
         ids=ids,

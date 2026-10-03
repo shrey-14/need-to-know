@@ -11,8 +11,8 @@ headers_to_split_on = [
     ("####", "Header 4"),
 ]
 
-chunk_size = 250
-chunk_overlap = 30
+chunk_size = 800
+chunk_overlap = 150
 
 def chunk_documents() -> list[Document]:
 

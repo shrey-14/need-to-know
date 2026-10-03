@@ -58,7 +58,7 @@ def answer_question(query: str, role: str) -> dict:
 
 
 if __name__ == "__main__":
-    result = answer_question(query="What is the annual revenue of the company in 2024?", role="finance")
+    result = answer_question(query="What is the company's leave policy?", role="hr")
     print(result["answer"])
     print(result["sources"])
     print(result["contexts"])
