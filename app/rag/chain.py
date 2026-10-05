@@ -58,7 +58,7 @@ def answer_question(query: str, role: str) -> dict:
 
 
 if __name__ == "__main__":
-    result = answer_question(query="What is the company's leave policy?", role="hr")
+    result = answer_question(query="Which is Arav Kapoor's role?", role="hr")
     print(result["answer"])
     print(result["sources"])
     print(result["contexts"])
