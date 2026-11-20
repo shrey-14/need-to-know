@@ -1,21 +1,20 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import StatusBar from "../components/StatusBar";
-import TerminalPanel from "../components/TerminalPanel";
-import SystemRail from "../components/SystemRail";
+import TopBar from "../components/TopBar";
+import Icon from "../components/Icon";
 import { login, ApiError } from "../api/client";
 import { saveToken } from "../auth";
-import { BOOT_LOG } from "../systemStatus";
-import { ALL_CATEGORIES } from "../roles";
+import { allowedCategories } from "../roles";
+import { DEPARTMENTS, inkStyle, roleLabel } from "../departments";
 import styles from "./Login.module.css";
 
 const DEMO_ACCOUNTS = [
-  { key: "F1", label: "FINANCE", username: "finance_user", password: "finance123" },
-  { key: "F2", label: "MARKETING", username: "marketing_user", password: "marketing123" },
-  { key: "F3", label: "HR", username: "hr_user", password: "hr123" },
-  { key: "F4", label: "ENGINEERING", username: "engineering_user", password: "engineering123" },
-  { key: "F5", label: "EMPLOYEE", username: "employee_user", password: "employee123" },
-  { key: "F6", label: "C_LEVEL", username: "clevel_user", password: "clevel123" },
+  { role: "finance", username: "finance_user", password: "finance123" },
+  { role: "marketing", username: "marketing_user", password: "marketing123" },
+  { role: "hr", username: "hr_user", password: "hr123" },
+  { role: "engineering", username: "engineering_user", password: "engineering123" },
+  { role: "employee", username: "employee_user", password: "employee123" },
+  { role: "c_level", username: "clevel_user", password: "clevel123" },
 ];
 
 export default function Login() {
@@ -23,22 +22,26 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
-  const [pressedKey, setPressedKey] = useState<string | null>(null);
+  const [pendingRole, setPendingRole] = useState<string | null>(null);
+  const [pendingForm, setPendingForm] = useState(false);
+  const busy = pendingForm || pendingRole !== null;
 
-  async function authenticate(user: string, pass: string, key?: string) {
+  async function authenticate(user: string, pass: string, role?: string) {
     setError(null);
-    setPending(true);
-    setPressedKey(key ?? null);
+    if (role) setPendingRole(role);
+    else setPendingForm(true);
     try {
       const { access_token } = await login(user, pass);
       saveToken(access_token);
       navigate("/chat");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not reach the server.");
-      setPressedKey(null);
-    } finally {
-      setPending(false);
+      if (err instanceof ApiError && err.status === 401) {
+        setError("That username and password don't match. Check them and try again.");
+      } else {
+        setError("Couldn't reach the server. Check that the backend is running, then try again.");
+      }
+      setPendingRole(null);
+      setPendingForm(false);
     }
   }
 
@@ -49,96 +52,96 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      <StatusBar title="FINSOLVE TERMINAL — SECURE ACCESS" />
+      <TopBar />
 
-      <div className={styles.body}>
-        <SystemRail title="System Status">
-          {BOOT_LOG.map((line) => (
-            <div key={line.label} className={styles.bootLine}>
-              <span>{line.label}</span>
-              <span className={styles.bootStatus}>{line.status}</span>
-            </div>
-          ))}
-
-          <div className={styles.railDivider} />
-          <div className={styles.railSubtitle}>Data Categories</div>
-          {ALL_CATEGORIES.map((category) => (
-            <div key={category} className={styles.categoryLine}>
-              <span className={styles.categoryDot} />
-              <span>{category.toUpperCase()}</span>
-            </div>
-          ))}
-        </SystemRail>
-
-        <main className={styles.content}>
-          <p className={styles.valueProp}>
-            Ask questions about FinSolve's finance, marketing, HR, engineering, and policy data in
-            plain language — every answer is cited to its source and scoped to your role.
+      <main className={styles.main}>
+        <section className={styles.signIn} aria-labelledby="sign-in-heading">
+          <h1 id="sign-in-heading" className={styles.title}>
+            Answers from FinSolve's own documents, within your role's access
+          </h1>
+          <p className={styles.lede}>
+            Ask about finance, marketing, HR, engineering or company policy in plain language. Every
+            answer lists the documents it came from.
           </p>
-          <TerminalPanel label="FINSOLVE — Secure Access Terminal" className={styles.console}>
-            <div className={styles.consoleGrid}>
-              <div className={styles.consoleRegion}>
-                <div className={styles.regionTitle}>Authenticate</div>
-                <form onSubmit={handleSubmit} className={styles.form}>
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel} id="user-label">USER:</span>
-                    <input
-                      className={styles.input}
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      autoComplete="username"
-                      aria-labelledby="user-label"
-                      autoFocus
-                    />
-                  </label>
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel} id="pass-label">PASS:</span>
-                    <input
-                      className={styles.input}
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      autoComplete="current-password"
-                      aria-labelledby="pass-label"
-                    />
-                  </label>
 
-                  {error && (
-                    <p className={styles.error} role="alert" aria-live="assertive">
-                      {error}
-                    </p>
-                  )}
+          <form onSubmit={handleSubmit} className={styles.form} noValidate>
+            <label className={styles.field}>
+              <span className={styles.label}>Username</span>
+              <input
+                className={styles.input}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                autoFocus
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>Password</span>
+              <input
+                className={styles.input}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
 
-                  <button className={styles.submit} type="submit" disabled={pending}>
-                    {pending && !pressedKey ? "AUTHENTICATING…" : "ENTER TERMINAL"}
+            {error && (
+              <p className={styles.error} role="alert">
+                <Icon name="alert" size={18} />
+                {error}
+              </p>
+            )}
+
+            <button
+              className={styles.submit}
+              type="submit"
+              disabled={busy || !username.trim() || !password}
+            >
+              {pendingForm ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+        </section>
+
+        <section className={styles.demo} aria-labelledby="demo-heading">
+          <h2 id="demo-heading" className={styles.demoTitle}>
+            Or sign in as a demo role
+          </h2>
+          <p className={styles.demoLede}>
+            Each role can read a different set of departments. Try two and ask the same question.
+          </p>
+
+          <ul className={styles.roles}>
+            {DEMO_ACCOUNTS.map((account) => {
+              const cats = allowedCategories(account.role);
+              const signingIn = pendingRole === account.role;
+              return (
+                <li key={account.role}>
+                  <button
+                    type="button"
+                    className={styles.roleButton}
+                    disabled={busy}
+                    aria-busy={signingIn}
+                    onClick={() => authenticate(account.username, account.password, account.role)}
+                  >
+                    <span className={styles.roleName}>
+                      {signingIn ? "Signing in…" : roleLabel(account.role)}
+                    </span>
+                    <span className={styles.roleReads}>
+                      <span className="sr-only">Reads </span>
+                      {cats.map((cat) => (
+                        <span key={cat} className={styles.inkTag} style={inkStyle(cat)}>
+                          {DEPARTMENTS[cat].label}
+                        </span>
+                      ))}
+                    </span>
                   </button>
-                </form>
-              </div>
-
-              <div className={styles.consoleDivider} />
-
-              <div className={styles.consoleRegion}>
-                <div className={styles.regionTitle}>Demo accounts — one-click access</div>
-                <div className={styles.demoGrid}>
-                  {DEMO_ACCOUNTS.map((account) => (
-                    <button
-                      key={account.key}
-                      type="button"
-                      className={`${styles.demoKey} ${pressedKey === account.key ? styles.demoKeyActive : ""}`}
-                      disabled={pending}
-                      aria-pressed={pressedKey === account.key}
-                      onClick={() => authenticate(account.username, account.password, account.key)}
-                    >
-                      <span className={styles.demoKeyId}>{account.key}</span>
-                      <span>{pressedKey === account.key ? "SIGNING IN…" : account.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </TerminalPanel>
-        </main>
-      </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </main>
     </div>
   );
 }

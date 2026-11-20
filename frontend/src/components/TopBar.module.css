@@ -1,0 +1,40 @@
+.bar {
+  height: 60px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: 0 var(--space-6);
+  background: var(--color-navy);
+  color: var(--color-on-navy);
+}
+
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.company {
+  font-weight: 700;
+}
+
+.product {
+  color: var(--color-on-navy-muted);
+}
+
+.right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 0 var(--space-4);
+    gap: var(--space-3);
+  }
+}

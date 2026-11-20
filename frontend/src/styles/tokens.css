@@ -1,29 +1,46 @@
 :root {
-  /* Ground */
-  --color-bg: #0b0f14;
-  --color-panel: #151a21;
-  --color-panel-raised: #1b2129;
-  --color-border: #2b333d;
-  --color-border-strong: #3c4854;
+  /* Ground: daylit desk use, so a white report page with one cool panel step. */
+  --color-page: #ffffff;
+  --color-panel: #f6f7f9;
+  --color-panel-strong: #eef0f4;
+  --color-line: #e3e6ec;
+  --color-line-strong: #cdd2db;
+
+  /* Report navy: the shell band and primary actions. */
+  --color-navy: #14213d;
+  --color-navy-hover: #22335a;
+  --color-navy-soft: #e8ecf4;
+  --color-on-navy: #ffffff;
+  --color-on-navy-muted: #b6c0d4;
 
   /* Text */
-  --color-text: #e7e5df;
-  --color-text-muted: #9b9585;
+  --color-text: #1b2230;
+  --color-text-muted: #545d70;
+  --color-text-faint: #5d6578;
 
-  /* The one committed accent */
-  --color-amber: #f2a63d;
-  --color-amber-dim: #b97e2c;
-  --color-amber-hover: #ffb84f;
+  /* Department inks: one fixed ink per category, used identically in the
+     access rail, the role keys on sign-in, and every source note. */
+  --ink-finance: #1b6f80;
+  --ink-finance-soft: #e3f1f4;
+  --ink-marketing: #b45a14;
+  --ink-marketing-soft: #fbeee2;
+  --ink-hr: #6a4c93;
+  --ink-hr-soft: #efe9f6;
+  --ink-engineering: #2b7449;
+  --ink-engineering-soft: #e4f2ea;
+  --ink-general: #556074;
+  --ink-general-soft: #eceef2;
 
-  /* Declined / error (a single muted rust, not a second bright accent).
-     -dim is used as a border/UI-component color, so it's tuned to clear the
-     3:1 non-text contrast floor (WCAG 1.4.11), not just look "dim". */
-  --color-declined: #d97a5f;
-  --color-declined-dim: #9c5a45;
+  /* States: used only where they carry meaning. */
+  --color-declined: #8a5a12;
+  --color-declined-soft: #fdf5e6;
+  --color-declined-line: #ecd5a8;
+  --color-error: #b42318;
+  --color-error-soft: #fdecea;
 
   /* Type */
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
-  --font-sans: "DM Sans", -apple-system, sans-serif;
+  --font-sans: "Source Sans 3", -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
 
   /* Spacing scale */
   --space-1: 4px;
@@ -34,4 +51,9 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
