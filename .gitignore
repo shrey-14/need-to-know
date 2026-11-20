@@ -27,7 +27,6 @@ frontend/dist/
 .github/*
 !.github/workflows/
 .impeccable/
-DESIGN.md
 PRODUCT.md
 docs/BUILD_GUIDE.md
 
