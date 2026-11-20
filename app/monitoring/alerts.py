@@ -1,16 +1,20 @@
-# Threshold check against daily_cost_alert_usd, with a Slack webhook notifier.
-# Monitoring phase.
+# Threshold check against daily_cost_alert_usd, with an email notifier over
+# SMTP. Provider-agnostic on purpose: Gmail (app password), a transactional
+# provider (Resend, SendGrid, Postmark, Amazon SES) or Azure Communication
+# Services all accept plain SMTP, so switching provider is a config change,
+# not a code change. Monitoring phase.
 import datetime
+import smtplib
+from email.message import EmailMessage
 
 import psycopg
-import requests
 
 from app.core.config import get_settings
 
 settings = get_settings()
 
 # In-memory "did we already alert today" guard, so a threshold that's already
-# been crossed doesn't re-post to Slack on every subsequent request for the
+# been crossed doesn't send another email on every subsequent request for the
 # rest of the day. Resets naturally when the date changes. Losing this on a
 # server restart just risks one duplicate alert, not lost data — unlike
 # cost_log itself, this doesn't need to be persisted in Supabase.
@@ -32,18 +36,41 @@ def get_today_cost() -> float:
     return float(result[0])
 
 
-def send_slack_alert(message: str) -> None:
-    """POST a message to the configured Slack incoming webhook. Never raises —
-    a notification failure must not break the chat response that triggered it."""
-    if not settings.slack_webhook_url:
-        print(f"[alerts] SLACK_WEBHOOK_URL not set — would have alerted: {message}")
+def email_configured() -> bool:
+    return bool(settings.alert_email_to and settings.smtp_host and settings.smtp_username)
+
+
+def send_email_alert(subject: str, body: str) -> None:
+    """Send one plain-text alert email. Never raises — a notification failure
+    must not break the chat response that triggered it."""
+    if not email_configured():
+        print(f"[alerts] email not configured — would have alerted: {subject}")
         return
+
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = settings.alert_email_from or settings.smtp_username
+    message["To"] = settings.alert_email_to
+    message.set_content(body)
+
     try:
-        response = requests.post(settings.slack_webhook_url, json={"text": message}, timeout=5)
-        response.raise_for_status()
-        print("[alerts] Slack alert sent.")
+        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10) as smtp:
+            smtp.starttls()
+            try:
+                smtp.login(settings.smtp_username, settings.smtp_password)
+            except (smtplib.SMTPAuthenticationError, smtplib.SMTPServerDisconnected) as exc:
+                # Gmail either rejects or simply drops the connection on bad
+                # credentials, so both mean "check the login", not "network".
+                print(
+                    f"[alerts] SMTP login rejected ({exc}). Check SMTP_USERNAME, and that "
+                    "SMTP_PASSWORD is an app password (Gmail: 16 letters, needs 2-Step "
+                    "Verification), not the account password."
+                )
+                return
+            smtp.send_message(message)
+        print("[alerts] alert email sent.")
     except Exception as exc:
-        print(f"[alerts] failed to send Slack alert: {exc}")
+        print(f"[alerts] failed to send alert email: {exc}")
 
 
 def check_daily_cost_threshold() -> None:
@@ -53,16 +80,24 @@ def check_daily_cost_threshold() -> None:
 
     today_cost = get_today_cost()
     if today_cost < settings.daily_cost_alert_usd:
-        print(f"Today's cost so far: ${today_cost:.6f}")
         return
 
     today = datetime.date.today()
     if _last_alert_date == today:
         return  # already alerted today, don't spam
 
-    send_slack_alert(
-        f"ALERT: FinSolve Terminal's cost today (${today_cost:.6f}) has exceeded "
-        f"the ${settings.daily_cost_alert_usd:.6f} daily threshold."
+    threshold = settings.daily_cost_alert_usd
+    send_email_alert(
+        subject=f"[FinSolve Assistant] Daily LLM cost ${today_cost:.4f} exceeded ${threshold:.2f}",
+        body=(
+            f"Today's estimated LLM cost is ${today_cost:.6f}, above the daily alert "
+            f"threshold of ${threshold:.2f} (DAILY_COST_ALERT_USD).\n\n"
+            f"Date (server): {today.isoformat()}\n\n"
+            "Where to look:\n"
+            "- Supabase: the cost_log table, for per-request tokens, cost, role and latency.\n"
+            "- Groq console: usage and limits for the API key.\n\n"
+            "You'll get at most one of these per day."
+        ),
     )
     _last_alert_date = today
 

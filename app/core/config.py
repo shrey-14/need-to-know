@@ -28,8 +28,14 @@ class Settings(BaseSettings):
     database_url: str = ""  # Supabase Postgres connection string
     daily_cost_alert_usd: float = 1.0
 
-    # Slack
-    slack_webhook_url: str = ""
+    # Cost-alert email over SMTP. Alerts are skipped (logged only) until
+    # ALERT_EMAIL_TO, SMTP_HOST and SMTP_USERNAME are all set.
+    alert_email_to: str = ""
+    alert_email_from: str = ""  # defaults to smtp_username
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
 
 
 @lru_cache
