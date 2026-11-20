@@ -391,3 +391,27 @@ BM25 over 334 chunks adds negligible latency. Startup builds the index once.
   - **typo-02:** one of the two Isha Chowdhury rows is ranked low, and the model refuses.
 
 **Decision:** **keep both stages.** EXP-002 = hybrid BM25 + RRF + contextual chunk headers is the new baseline for EXP-003 (reranker over the top 20 fused candidates, keeping the top 5). Expect smaller gains than Stage A's gap suggested; the remaining k=5 misses are sf-03, the multi_doc rows, mc-02 and typo-02.
+
+---
+
+## EXP-003 — Prompt rule: no counting or totalling over retrieved records
+
+| | |
+|---|---|
+| Date | 2026-11-20 |
+| Commit | *(filled in after the run)* |
+| Results | *(filled in after the run)* |
+| Dataset | sha256 `9537e4eb…a5dd0ba` (unchanged) |
+| Compared against | EXP-002 Stage B (`eval/results/20261005-120129.json`) |
+
+**Hypothesis / prediction** (written before the change):
+- **The problem:** in EXP-002 B, 3 of 5 aggregate rows were *confidently wrong*: agg-02 "five employees in Sales" (truth 15), agg-04 "one employee" (23), agg-05 "4 employees" (10). The model counts the handful of HR rows it was given and reports that as the total.
+- **The change:** a prompt rule saying the context holds only a sample of records, so it must not count, sum or average across them unless the documents state the figure directly. It should say so instead, with a reply starting "I don't have", so Tier 2's `refused` flag catches it.
+- **Prediction:**
+  - aggregate pass rate stays 0/5, since none of these can be answered from retrieved records;
+  - confidently wrong numeric answers on aggregate rows drop from 3 to 0;
+  - aggregate `refused` rises from 1 to about 4;
+  - agg-03 (*list* the HR team) is at risk of being over-refused, which would be a regression worth watching;
+  - every other tag is unchanged within the noise floor (±2 rows);
+  - single facts that quote a stated total, like sf-01's "$9.4 billion", must still pass;
+  - the retrieval check (Tier 1) is identical, because retrieval code is untouched.

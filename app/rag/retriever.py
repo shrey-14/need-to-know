@@ -12,7 +12,7 @@ settings = get_settings()
 
 # Recorded in every eval run's manifest. Update when the retrieval approach
 # changes (e.g. "hybrid-bm25-rrf", "hybrid-bm25-rrf+rerank").
-RETRIEVAL_STRATEGY = "hybrid-bm25-rrf"
+RETRIEVAL_STRATEGY = "hybrid-bm25-rrf+ctx-headers"
 
 model_name = settings.embedding_model
 model_kwargs = {"device": "cpu"}
