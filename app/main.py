@@ -13,7 +13,13 @@ from app.monitoring.cost_tracker import ensure_table
 app = FastAPI(title="RAG Chatbot with RBAC")
 
 if get_settings().database_url:
-    ensure_table()
+    try:
+        ensure_table()
+    except Exception as exc:
+        # Cost logging is a side feature: a paused or unreachable database
+        # (Supabase pauses idle free-tier projects) must not stop chat from
+        # starting. log_cost() already fails soft per request.
+        print(f"[cost_tracker] database unavailable at startup, cost logging will fail until it's back: {exc}")
 else:
     print("[cost_tracker] DATABASE_URL not set — cost logging disabled.")
 
