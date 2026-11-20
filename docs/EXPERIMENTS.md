@@ -399,8 +399,8 @@ BM25 over 334 chunks adds negligible latency. Startup builds the index once.
 | | |
 |---|---|
 | Date | 2026-11-20 |
-| Commit | *(filled in after the run)* |
-| Results | *(filled in after the run)* |
+| Commit | `609feb8` (clean) |
+| Results | Tier 1: `eval/results/retrieval-20261120-233848.json` · Tier 2: `eval/results/20261120-233854.json` |
 | Dataset | sha256 `9537e4eb…a5dd0ba` (unchanged) |
 | Compared against | EXP-002 Stage B (`eval/results/20261005-120129.json`) |
 
@@ -415,3 +415,51 @@ BM25 over 334 chunks adds negligible latency. Startup builds the index once.
   - every other tag is unchanged within the noise floor (±2 rows);
   - single facts that quote a stated total, like sf-01's "$9.4 billion", must still pass;
   - the retrieval check (Tier 1) is identical, because retrieval code is untouched.
+
+**Change** (`app/rag/prompts.py`): system-prompt rule 4.
+- It says the context is a small sample of records.
+- It forbids counting, totalling, averaging or ranking records unless a document states the figure.
+- It gives a fixed reply: "I don't have a reliable figure for that: I can only see a few matching records, not the full dataset."
+- It still allows listing the visible records, provided they aren't presented as complete.
+- The same commit corrects the `RETRIEVAL_STRATEGY` label to `hybrid-bm25-rrf+ctx-headers`. That's a label fix only; the retrieval code is unchanged.
+
+**Results** (k=5):
+
+| Tag | n | Pass rate | Δ vs EXP-002 B | Mean score | Δ | Refused |
+|---|---|---|---|---|---|---|
+| single_fact | 11 | 0.727 | 0 | 0.841 | 0 | 0 |
+| aggregate | 5 | 0.000 | 0 | 0.150 | 0 | 4 (was 1) |
+| multi_doc | 3 | 0.333 | +0.333 | 0.700 | +0.333 | 0 |
+| multi_chunk | 2 | 0.500 | 0 | 0.875 | 0 | 1 |
+| entity_typo | 3 | 0.667 | 0 | 0.667 | 0 | 1 |
+| **overall** | 24 | **0.500** | +0.042 | **0.660** | +0.041 | 6 |
+
+Tier 2 overall: 12 PASS / 6 PARTIAL / 6 FAIL (6 refused). Tier 1 is identical to EXP-002 B row for row (0.812 at k=5), as predicted.
+
+**What the aggregate rows now say** (the point of this experiment):
+
+| Row | EXP-002 B | EXP-003 |
+|---|---|---|
+| agg-02 (Sales headcount, truth 15) | "five employees" ✗ | "I don't have a reliable figure for that…" |
+| agg-04 (rating 5, truth 23) | "one employee" ✗ | "I don't have a reliable figure for that…" |
+| agg-05 (Mumbai, truth 10) | "4 employees" ✗ | "I don't have access to that information." (see below) |
+| agg-01 (headcount, truth 100) | refused | refused |
+| agg-03 (list HR staff) | 3 of 4 named | 3 of 4 named, framed as "the employees shown" |
+
+**Confidently wrong numeric answers: 3 → 0.**
+
+**Rows that flipped:** multi-02 went FAIL → PASS. The prompt change doesn't touch it, so it's within the measured noise floor (about 2 rows).
+
+**Layer B:** 0 failures / 30 rows.
+
+**Ops:**
+- 27 LLM requests (28 in EXP-002 B), $0.00668 total.
+- Prompt tokens +9% (26,849 vs 24,671), from the longer system prompt.
+- Average latency 5.9 s and p95 11.5 s, against 4.8 s / 12.9 s before: within Groq's run-to-run variance.
+
+**Observations:**
+- The rule removed the most harmful behaviour in the system, confident wrong counts, with no measured regression. sf-01's stated total ("$9.4 billion") still passes, and agg-03 still lists the visible records instead of over-refusing.
+- **agg-05 was declined by the scope guardrail, not by the new rule.** "I don't have access to that information." is `chain.py`'s short-circuit text, and the run made 27 LLM calls instead of 28. The guardrail's LLM classifier (used only for mid-band relevance scores) is non-deterministic: the same question passed it in EXP-002 B.
+- Aggregates remain unanswerable by design: pass rate 0/5. Answering them needs a structured path (precomputed summaries or a tools/SQL route), not retrieval tuning.
+
+**Decision:** **keep the rule.** EXP-003 is the v1 configuration: hybrid BM25 + dense with RRF, contextual chunk headers, 800/150 chunks, k=5, and the no-counting rule.
