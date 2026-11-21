@@ -1,0 +1,36 @@
+# Keeps the free-tier Supabase project from pausing. Supabase pauses Free
+# projects after ~7 days of low activity, judged by real database activity, so
+# this runs an actual query rather than just opening a connection.
+#
+# Setup: repo Settings -> Secrets and variables -> Actions -> New repository
+# secret, name DATABASE_URL, value = the Supabase *session pooler* URL.
+#
+# Note: GitHub disables scheduled workflows in repos with no activity for 60
+# days; any push re-enables them.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 6 */2 * *" # every 2 days, 06:17 UTC
+  workflow_dispatch: {} # run manually from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query the database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::warning::DATABASE_URL secret is not set; skipping."
+            exit 0
+          fi
+          pip install --quiet "psycopg[binary]>=3.2"
+          python - <<'PY'
+          import os, psycopg
+          with psycopg.connect(os.environ["DATABASE_URL"], connect_timeout=15) as conn:
+              rows = conn.execute("SELECT count(*) FROM cost_log").fetchone()[0]
+          print(f"Supabase reachable; cost_log has {rows} rows.")
+          PY

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # Imported first, and for its side effect: loading .env into os.environ before
 # anything else (LangSmith, huggingface_hub, etc.) reads it. See the comment in
@@ -11,6 +12,18 @@ from app.core.config import get_settings
 from app.monitoring.cost_tracker import ensure_table
 
 app = FastAPI(title="RAG Chatbot with RBAC")
+
+# The frontend is served from a different origin in production (Static Web
+# Apps), so the browser needs CORS. Exact origins only, never "*": the API
+# takes a bearer token, and only our own frontend should be calling it.
+_origins = [o.strip().rstrip("/") for o in get_settings().cors_origins.split(",") if o.strip()]
+if _origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_origins,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
 
 if get_settings().database_url:
     try:

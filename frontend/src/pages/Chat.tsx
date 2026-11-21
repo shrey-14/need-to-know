@@ -12,6 +12,7 @@ import { ALL_CATEGORIES, allowedCategories, type Category } from "../roles";
 import { DEPARTMENTS, inkStyle, roleLabel } from "../departments";
 import { annotate, isDecline, FIGURE_MARK, NOTE_MARK, type AnnotatedAnswer, type Note } from "../citations";
 import { EXAMPLE_QUESTIONS } from "../exampleQuestions";
+import { useSlow } from "../useSlow";
 import styles from "./Chat.module.css";
 
 type Status = "pending" | "answered" | "declined" | "error";
@@ -260,10 +261,7 @@ export default function Chat() {
                 <h2 className={styles.question}>{ex.question}</h2>
 
                 {ex.status === "pending" && (
-                  <div className={styles.searching}>
-                    <span className={styles.searchBar} aria-hidden="true" />
-                    Searching the documents your role can read…
-                  </div>
+                  <Searching />
                 )}
 
                 {ex.status === "answered" && (
@@ -401,6 +399,22 @@ export default function Chat() {
           )}
         </aside>
       </div>
+    </div>
+  );
+}
+
+/** Pending state. Past a few seconds it says why: the API scales to zero when
+ *  idle, so the first question after a quiet spell includes a cold start. */
+function Searching() {
+  const slow = useSlow(true);
+  return (
+    <div className={styles.searching}>
+      <span className={styles.searchBar} aria-hidden="true" />
+      <span>
+        {slow
+          ? "Waking up the assistant. The first question after a quiet spell can take up to a minute…"
+          : "Searching the documents your role can read…"}
+      </span>
     </div>
   );
 }

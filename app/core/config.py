@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60
 
+    # Browser origins allowed to call the API, comma-separated, e.g. the Static
+    # Web Apps URL. Empty = no CORS headers (local dev goes through Vite's proxy).
+    cors_origins: str = ""
+
     # Vector store
     chroma_persist_dir: str = "./.chroma"
     embedding_model: str = "BAAI/bge-base-en-v1.5"

@@ -96,7 +96,7 @@ Requires Python 3.11+, Node 18+, and a [Groq](https://console.groq.com) API key.
 ```bash
 # Backend
 python -m venv venv && source venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,eval]"
 cp .env.example .env                 # set GROQ_API_KEY and JWT_SECRET_KEY at minimum
 python -m app.ingestion.build_index  # embed data/ into the local Chroma index
 uvicorn app.main:app --reload        # http://localhost:8000

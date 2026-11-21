@@ -75,6 +75,15 @@
   box-shadow: 0 0 0 3px rgba(20, 33, 61, 0.14);
 }
 
+.waking {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-navy-soft);
+  color: var(--color-navy);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
 .error {
   display: flex;
   gap: var(--space-2);

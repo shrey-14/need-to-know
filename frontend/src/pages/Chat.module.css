@@ -351,12 +351,15 @@
 
 .searching {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   color: var(--color-text-muted);
 }
 
 .searchBar {
+  /* Centred on the first text line, so a wrapped message keeps the bar beside it. */
+  flex: none;
+  margin-top: calc(0.8em - 1px);
   position: relative;
   width: 56px;
   height: 3px;

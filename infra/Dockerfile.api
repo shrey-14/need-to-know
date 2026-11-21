@@ -1,1 +1,49 @@
-# Backend image: python base, install pyproject deps, run uvicorn app.main:app. CI/CD phase.
+# API image for Azure Container Apps. Build context is the repo root:
+#   az acr build -r <registry> -t finsolve-api:v1 -f infra/Dockerfile.api .
+#
+# Everything slow happens at build time, so a cold start (scale-to-zero) only
+# loads files from disk: CPU-only torch, the embedding model, and the Chroma +
+# BM25 index built from data/.
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    HF_HOME=/app/.hf-cache
+
+WORKDIR /app
+
+# CPU-only torch first, so sentence-transformers doesn't pull the ~2 GB CUDA build.
+RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# Dependencies only (a stub package satisfies the build backend), so this
+# layer stays cached until pyproject.toml changes, not on every code edit.
+COPY pyproject.toml ./
+RUN mkdir app && touch app/__init__.py \
+    && pip install . \
+    && pip uninstall -y rag-chatbot-rbac \
+    && rm -rf app
+
+# Bake the embedding model into the image (no download at container start).
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-base-en-v1.5')"
+
+COPY app ./app
+COPY users ./users
+COPY data ./data
+
+# Build the vector index into the image; the BM25 index is rebuilt from it in
+# memory at startup.
+RUN python -m app.ingestion.build_index
+
+# Run as a non-root user. Chroma writes lock files next to its index, so the
+# app directory must be writable by that user.
+RUN useradd --create-home --uid 1000 appuser && chown -R appuser /app
+USER appuser
+
+# The model is already cached; never reach out to the Hub at runtime.
+ENV HF_HUB_OFFLINE=1 \
+    TRANSFORMERS_OFFLINE=1
+
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]

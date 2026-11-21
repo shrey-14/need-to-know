@@ -1,0 +1,26 @@
+# Secrets never enter the image; they arrive as Container App secrets.
+.env
+.env.*
+!.env.example
+
+# Local environments and build output
+venv/
+.venv/
+**/__pycache__/
+*.pyc
+.chroma/
+.hf-cache/
+
+# Not needed by the API image (the frontend ships to Static Web Apps)
+frontend/
+eval/
+tests/
+docs/
+.git/
+.github/
+.impeccable/
+*.docx
+*.ipynb
+metadata.txt
+Icon*
+.DS_Store

@@ -6,6 +6,7 @@ import { login, ApiError } from "../api/client";
 import { saveToken } from "../auth";
 import { allowedCategories } from "../roles";
 import { DEPARTMENTS, inkStyle, roleLabel } from "../departments";
+import { useSlow } from "../useSlow";
 import styles from "./Login.module.css";
 
 const DEMO_ACCOUNTS = [
@@ -25,6 +26,9 @@ export default function Login() {
   const [pendingRole, setPendingRole] = useState<string | null>(null);
   const [pendingForm, setPendingForm] = useState(false);
   const busy = pendingForm || pendingRole !== null;
+  // Signing in is the first request after a quiet spell, so it's where a cold
+  // start (the API scaled to zero) is felt; explain the wait instead of hanging.
+  const slow = useSlow(busy);
 
   async function authenticate(user: string, pass: string, role?: string) {
     setError(null);
@@ -85,6 +89,13 @@ export default function Login() {
                 autoComplete="current-password"
               />
             </label>
+
+            {slow && (
+              <p className={styles.waking} role="status">
+                Waking up the server. After a quiet spell this takes up to a minute; it's
+                quick after that.
+              </p>
+            )}
 
             {error && (
               <p className={styles.error} role="alert">
