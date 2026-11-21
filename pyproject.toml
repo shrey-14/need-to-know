@@ -15,6 +15,7 @@ dependencies = [
     "langchain-community>=0.3,<0.4",
     "langchain-groq>=0.2",
     "langchain-chroma>=0.1",
+    "langchain-text-splitters>=1.1",  # chunking.py; no longer pulled in by langchain 1.x
     "chromadb>=0.5",
     "sentence-transformers>=3.0",
     "pandas>=2.2",
