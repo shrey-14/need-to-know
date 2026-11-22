@@ -1,5 +1,7 @@
 # FinSolve Assistant: a RAG chatbot with role-based access control
 
+[![CI](https://github.com/shrey-14/need-to-know/actions/workflows/ci.yml/badge.svg)](https://github.com/shrey-14/need-to-know/actions/workflows/ci.yml)
+
 An internal assistant for a fictional fintech company, FinSolve Technologies. Employees ask questions in plain language and get answers grounded in the company's own documents: finance reports, marketing reports, HR records, engineering docs and the employee handbook. **Each answer only ever draws on the documents the employee's role is allowed to read**, and it cites the documents it used.
 
 **Live demo: [finsolveweb28797.z1.web.core.windows.net](https://finsolveweb28797.z1.web.core.windows.net)**. Sign in with any of the six demo roles and ask the same question as two different roles. The API scales to zero when idle, so the first sign-in after a quiet spell can take up to a minute; after that, answers take a few seconds.
@@ -90,6 +92,24 @@ The mapping lives in [app/core/roles.py](app/core/roles.py), the single source o
 | Hard gates | (part of tier 2) | No cross-role leaks; correct refusals and out-of-scope handling | — |
 | 3. Ragas | `python -m eval.run_evals --ragas` | LLM-judged faithfulness and correctness, for milestones only | ~200 |
 
+### Automated checks (CI)
+
+Every push and pull request runs [`.github/workflows/ci.yml`](.github/workflows/ci.yml). No secrets and no LLM calls are involved, so it's free to run.
+
+| Check | What it protects |
+|---|---|
+| **Access-control tests** (`tests/test_rbac_retrieval.py`): every role × a question aimed at every department, top 20 results | No chunk from a disallowed department is ever retrieved, by dense *or* BM25 search. Verified to fail (22 failures) if the BM25 role filter is removed. |
+| Auth tests | Every demo role gets a token with the right role claim; wrong passwords, forged and expired tokens are rejected. |
+| PII and access-map tests | Masking for roles without HR access; the backend map can't change silently, and the frontend's display copy must match it. |
+| Citation-parser tests (`frontend/src/citations.test.ts`) | The citation shapes the model produces, including the back-to-back-citation bug that once rendered as raw text. |
+| **Retrieval quality gate** | Tier 1 evidence recall must stay ≥ 0.78 (currently 0.812), and every eval evidence string must still exist in the index. |
+
+```bash
+pytest -q                                                          # backend tests (needs the built index)
+cd frontend && npm test                                            # frontend tests
+python -m eval.retrieval_check --min-recall 0.78 --no-save         # the quality gate
+```
+
 Every run saves a results file recording the git commit, a flag for uncommitted changes, the configuration, the index's chunk count and a hash of the dataset, so any number can be traced back to the code that produced it. Tiers 1 and 2 need no LLM judge, so they fit within free-tier API limits.
 
 ## Run it locally
@@ -167,7 +187,7 @@ az storage blob upload-batch --account-name <storage-account> --auth-mode key -s
 ## Roadmap
 
 - [x] Docker image built by GitHub Actions; deployed to Azure Container Apps with scale to zero
-- [ ] CI: unit tests plus the retrieval check as a gate on every push
+- [x] CI: access-control, auth and citation tests plus a retrieval quality gate on every push
 - [ ] Cross-encoder reranker over the fused top 20, to close the remaining gap between top-5 and top-15 retrieval
 - [ ] A structured path for aggregate questions
 
@@ -177,9 +197,10 @@ az storage blob upload-batch --account-name <storage-account> --auth-mode key -s
 app/          FastAPI backend: api, core (config, security, roles), ingestion, rag, guardrails, monitoring
 frontend/     React + Vite + TypeScript UI
 eval/         Test set, three-tier evaluation harness, results
+tests/        Backend tests: access control, auth, PII, access map
 data/         Source documents, one folder per department
 docs/         EXPERIMENTS.md (experiment log), screenshots
 users/        Demo users (bcrypt hashes)
 infra/        Dockerfile for the API image
-.github/      Workflows: API image build, Supabase keep-alive
+.github/      Workflows: CI, API image build, Supabase keep-alive
 ```

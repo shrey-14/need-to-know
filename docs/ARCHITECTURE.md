@@ -116,6 +116,11 @@ All monitoring is optional: the app runs with none of it configured.
 
 ## 5. Evaluation
 
+Automated checks run in CI on every push (`.github/workflows/ci.yml`, no secrets, no LLM calls):
+- **Backend** (`tests/`): retrieval never crosses a role boundary for any role or department (top 20, dense and BM25); auth issues correct role claims and rejects bad, forged and expired tokens; PII masking; the access map, and that the frontend's display copy matches it.
+- **Frontend** (`frontend/src/citations.test.ts`): citation parsing and decline detection.
+- **Quality gate:** `python -m eval.retrieval_check --min-recall 0.78`, plus `--validate` to confirm every eval evidence string still exists in the freshly built index.
+
 The `eval/` folder holds a 30-row test set (`eval_dataset.jsonl`). Each answerable row has:
 - `evidence`: text that must appear in the retrieved chunks;
 - `must_contain`: facts that must appear in the answer.
@@ -147,7 +152,8 @@ eval/                     eval_dataset.jsonl, checks.py, retrieval_check.py, run
 data/                     source documents, one folder per category
 users/users.yaml          demo users (bcrypt hashes)
 infra/Dockerfile.api      API image (see Deployment)
-.github/workflows/        build-api.yml (image build), supabase-keepalive.yml
+tests/                    backend tests (access control, auth, PII, access map)
+.github/workflows/        ci.yml (tests + quality gate), build-api.yml (image build), supabase-keepalive.yml
 ```
 
 ## 7. Deployment
@@ -209,4 +215,3 @@ The React build is static, so it's served from an Azure Storage static website: 
 - **Each question is answered on its own;** there is no memory across turns.
 - **The scope guardrail's LLM classifier is non-deterministic for borderline questions,** so the same question can occasionally be declined in one run and answered in another (seen in EXP-003).
 - **Redeploying the API is a manual step:** a push to `main` rebuilds the image, but the Container App only picks it up on a new revision (`az containerapp update --image ghcr.io/shrey-14/finsolve-api:<commit-sha>`).
-- **No CI test gate yet:** `.github/workflows/ci.yml` is still a placeholder. Unit tests and the Tier 1 retrieval check are planned to run on every push.

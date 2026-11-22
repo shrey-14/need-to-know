@@ -6,6 +6,7 @@
 #   venv/bin/python -m eval.retrieval_check              # score at the default k
 #   venv/bin/python -m eval.retrieval_check --k 8        # try a different k (no code change)
 #   venv/bin/python -m eval.retrieval_check --validate   # is every evidence string in the index at all?
+#   venv/bin/python -m eval.retrieval_check --min-recall 0.78 --no-save   # CI gate: exit 1 below the floor
 import argparse
 import hashlib
 import inspect
@@ -53,6 +54,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--k", type=int, default=DEFAULT_K)
     parser.add_argument("--validate", action="store_true")
+    parser.add_argument("--min-recall", type=float, default=None,
+                        help="exit 1 if overall evidence recall falls below this (CI quality gate)")
+    parser.add_argument("--no-save", action="store_true", help="don't write a results file (CI runs)")
     args = parser.parse_args()
 
     dataset_bytes = DATASET_PATH.read_bytes()
@@ -115,9 +119,11 @@ def main() -> int:
         },
         "results": records,
     }
-    RESULTS_DIR.mkdir(exist_ok=True)
-    out_path = RESULTS_DIR / f"retrieval-{run_id}.json"
-    out_path.write_text(json.dumps(out, indent=2, allow_nan=False))
+    out_path = None
+    if not args.no_save:
+        RESULTS_DIR.mkdir(exist_ok=True)
+        out_path = RESULTS_DIR / f"retrieval-{run_id}.json"
+        out_path.write_text(json.dumps(out, indent=2, allow_nan=False))
 
     cfg = out["manifest"]["config"]
     print(f"\nRetrieval check · {cfg['retrieval_strategy']} · chunk {cfg['chunk_size']}/{cfg['chunk_overlap']}"
@@ -130,7 +136,15 @@ def main() -> int:
     for r in records:
         if r["missing"]:
             print(f"  MISS {r['id']:9} missing {r['missing']}")
-    print(f"Saved {out_path.relative_to(PROJECT_ROOT)}")
+    if out_path:
+        print(f"Saved {out_path.relative_to(PROJECT_ROOT)}")
+
+    recall = out["summary"]["overall"]["evidence_recall"]
+    if args.min_recall is not None:
+        if recall < args.min_recall:
+            print(f"\nGATE FAILED: evidence recall {recall} is below the floor {args.min_recall}")
+            return 1
+        print(f"\nGATE PASSED: evidence recall {recall} >= {args.min_recall}")
     return 0
 
 
