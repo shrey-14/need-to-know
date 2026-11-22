@@ -2,6 +2,8 @@
 
 An internal assistant for a fictional fintech company, FinSolve Technologies. Employees ask questions in plain language and get answers grounded in the company's own documents: finance reports, marketing reports, HR records, engineering docs and the employee handbook. **Each answer only ever draws on the documents the employee's role is allowed to read**, and it cites the documents it used.
 
+**Live demo: [finsolveweb28797.z1.web.core.windows.net](https://finsolveweb28797.z1.web.core.windows.net)**. Sign in with any of the six demo roles and ask the same question as two different roles. The API scales to zero when idle, so the first sign-in after a quiet spell can take up to a minute; after that, answers take a few seconds.
+
 ![Answer with numbered source notes](docs/screenshots/chat-answer.png)
 
 ## Why it's built this way
@@ -77,6 +79,7 @@ The mapping lives in [app/core/roles.py](app/core/roles.py), the single source o
 | Frontend | React, Vite, TypeScript; GFM markdown rendering, sanitised |
 | Monitoring | LangSmith tracing; Supabase Postgres cost and latency log; SMTP email alerts |
 | Evaluation | Custom three-tier harness, plus optional Ragas |
+| Deployment | Azure Container Apps (API, scale to zero), Azure Storage static website (frontend), GitHub Actions → ghcr.io |
 
 ## Evaluation harness
 
@@ -114,6 +117,41 @@ Optional settings in `.env`:
 
 The app runs without any of them.
 
+## Deployment
+
+```
+GitHub push to main ──► GitHub Actions builds the API image (amd64) ──► ghcr.io/shrey-14/finsolve-api
+                                                                              │ pulled on new revision
+Browser ──► Azure Storage static website (React build) ──── HTTPS + CORS ───► Azure Container Apps (FastAPI)
+                                                                              ├─► Groq (LLM)
+                                                                              ├─► Supabase Postgres (cost log)
+                                                                              └─► LangSmith (traces)
+```
+
+| Part | Where | Notes |
+|---|---|---|
+| API | Azure Container Apps, Germany West Central | 1 vCPU / 2 GiB, **min 0 / max 1 replicas** (scale to zero). The image already contains CPU-only PyTorch, the embedding model and the built index, so a cold start only loads files. |
+| Frontend | Azure Storage static website | No compute to pay for; `index.html` doubles as the 404 page so links like `/chat` work on refresh. |
+| Image build | GitHub Actions → GitHub Container Registry | Builds on amd64 runners; the Docker layers are cached between runs. |
+| Secrets | Container App secrets | Groq, JWT, database, LangSmith and SMTP credentials. Never in the image (`.dockerignore` excludes `.env`). |
+| Database keep-alive | GitHub Actions, every 2 days | A real query, so the free Supabase project never pauses. |
+
+**Cost:**
+- With scale to zero, the API runs only while it's being used, and light demo traffic fits inside Azure's free monthly allowance.
+- Storage costs a few cents a month at most.
+- Groq's free tier is rate-limited rather than billed, so public demo logins can't run up a bill.
+- For instant responses while applying, switch on one always-warm replica with `--min-replicas 1`, which costs roughly $20–25 a month; set it back with `--min-replicas 0`.
+
+**Redeploying:**
+```bash
+# API: a push to main rebuilds the image; then point the app at the new tag (the commit SHA)
+az containerapp update -n finsolve-api -g finsolve-rg --image ghcr.io/shrey-14/finsolve-api:<commit-sha>
+
+# Frontend: build against the live API, then upload to the storage account's $web container
+cd frontend && VITE_API_BASE_URL=<api-url> npm run build
+az storage blob upload-batch --account-name <storage-account> --auth-mode key -s dist -d '$web' --overwrite
+```
+
 ## Known limitations
 
 - **Counting and totals aren't supported.** "How many employees are in Sales?" needs all 100 HR records, but retrieval returns 5. The assistant now declines these instead of guessing. A real fix needs a structured path, such as precomputed summaries or a SQL tool.
@@ -128,7 +166,8 @@ The app runs without any of them.
 
 ## Roadmap
 
-- [ ] Docker images, CI (unit tests plus the retrieval check as a gate) and deployment to Azure Container Apps
+- [x] Docker image built by GitHub Actions; deployed to Azure Container Apps with scale to zero
+- [ ] CI: unit tests plus the retrieval check as a gate on every push
 - [ ] Cross-encoder reranker over the fused top 20, to close the remaining gap between top-5 and top-15 retrieval
 - [ ] A structured path for aggregate questions
 
@@ -141,4 +180,6 @@ eval/         Test set, three-tier evaluation harness, results
 data/         Source documents, one folder per department
 docs/         EXPERIMENTS.md (experiment log), screenshots
 users/        Demo users (bcrypt hashes)
+infra/        Dockerfile for the API image
+.github/      Workflows: API image build, Supabase keep-alive
 ```

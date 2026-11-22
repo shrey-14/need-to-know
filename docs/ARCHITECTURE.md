@@ -146,11 +146,67 @@ frontend/src/
 eval/                     eval_dataset.jsonl, checks.py, retrieval_check.py, run_evals.py, results/
 data/                     source documents, one folder per category
 users/users.yaml          demo users (bcrypt hashes)
+infra/Dockerfile.api      API image (see Deployment)
+.github/workflows/        build-api.yml (image build), supabase-keepalive.yml
 ```
 
-## 7. Known limitations
+## 7. Deployment
+
+```
+                        ┌──────────────────────────── GitHub ─────────────────────────────┐
+   push to main ──────► │ Actions: build-api.yml (amd64) ──► ghcr.io/shrey-14/finsolve-api │
+                        │ Actions: supabase-keepalive.yml (every 2 days) ──┐               │
+                        └──────────────────────────────────────────────────┼───────────────┘
+                                                                           │
+Browser ──► Azure Storage static website ─────► Azure Container Apps (Germany West Central)
+            (React build, $web container)  HTTPS   finsolve-api: FastAPI, 1 vCPU / 2 GiB,
+                                           + CORS  min 0 / max 1 replicas
+                                                    ├─► Groq API (gpt-oss-120b)
+                                                    ├─► Supabase Postgres (cost_log) ◄── keep-alive
+                                                    └─► LangSmith (project finsolve-prod)
+```
+
+### The API image (`infra/Dockerfile.api`)
+
+Everything slow happens at build time, so a cold start only reads files from disk:
+
+1. `python:3.12-slim` with **CPU-only PyTorch**, installed first so `sentence-transformers` doesn't pull the CUDA build (about 2 GB smaller).
+2. Dependencies in their own layer, installed from `pyproject.toml` with a stub package. That layer stays cached until the dependencies change.
+3. **The bge embedding model is downloaded into the image**, and at runtime `HF_HUB_OFFLINE=1` stops any calls to Hugging Face.
+4. **`build_index` runs during the build,** so the Chroma index ships inside the image. The BM25 index is rebuilt from it in memory at startup.
+5. Runs as a non-root user. Secrets are never in the image: `.dockerignore` excludes `.env`, and credentials arrive as Container App secrets at runtime.
+
+The image is built by GitHub Actions, not `az acr build`, for two reasons: Azure for Students subscriptions don't allow ACR Tasks, and a local build on Apple Silicon would produce arm64 images that Azure doesn't run. It's pushed to GitHub Container Registry as a public image, so the Container App pulls it without registry credentials.
+
+### Runtime configuration
+
+| Setting | Value | Why |
+|---|---|---|
+| Replicas | min 0, max 1 | Scale to zero: no compute is billed while idle. Max 1 caps cost under a traffic spike. |
+| Size | 1 vCPU, 2 GiB | PyTorch plus the embedding model need about 1.5 GiB. |
+| Secrets | `GROQ_API_KEY`, `JWT_SECRET_KEY` (generated for production), `DATABASE_URL`, `LANGCHAIN_API_KEY`, `SMTP_PASSWORD` | Referenced with `secretref:`, so they never appear in the app's settings. |
+| `CORS_ORIGINS` | The storage website's address | Exact origin only, never `*`. Without it, no CORS headers are sent (local dev uses Vite's proxy). |
+| `LANGCHAIN_PROJECT` | `finsolve-prod` | Keeps production traces separate from local and eval runs. |
+| Logs | No Log Analytics workspace | Avoids per-GB log charges; live logs still stream with `az containerapp logs show --follow`. |
+
+### Cold starts
+
+A request to a scaled-to-zero app waits while a replica starts and loads the model. The frontend is hosted separately on Storage, so the page itself always loads instantly. If sign-in or a question takes longer than 8 seconds, the UI explains the wait ("Waking up the server… up to a minute") instead of hanging silently. For instant responses, run `az containerapp update … --min-replicas 1` (one always-warm replica, billed at the idle rate).
+
+### Frontend hosting
+
+The React build is static, so it's served from an Azure Storage static website: no compute, a few cents a month at most. `index.html` is also configured as the 404 document, so links like `/chat` load the app on refresh; the trade-off is that such links come back with a 404 status code, which users never see. (Azure Static Web Apps would avoid that, but it isn't offered in any region this subscription allows.)
+
+### Keeping the free tiers alive
+
+- **Supabase:** free projects pause after about a week of low activity, so `supabase-keepalive.yml` runs a real query every 2 days. The API also starts and answers if the database is unavailable; only cost logging stops.
+- **LangSmith:** the free plan covers 5,000 traces a month with 14-day retention. Tracing runs in the background, so hitting the cap never affects answers.
+- **Groq:** the free tier is rate-limited, not billed. Under bursts, some requests may fail, and the UI shows a "Try again" state.
+
+## 8. Known limitations
 
 - **Questions that need counts or totals across records can't be answered** from top-5 retrieval. They are declined on purpose (prompt rule 4). A real fix would be a structured path: precomputed summaries or a tool or SQL route.
 - **Each question is answered on its own;** there is no memory across turns.
 - **The scope guardrail's LLM classifier is non-deterministic for borderline questions,** so the same question can occasionally be declined in one run and answered in another (seen in EXP-003).
-- **Not yet built:** Docker images, CI and cloud deployment (`infra/` and `.github/workflows/` are placeholders).
+- **Redeploying the API is a manual step:** a push to `main` rebuilds the image, but the Container App only picks it up on a new revision (`az containerapp update --image ghcr.io/shrey-14/finsolve-api:<commit-sha>`).
+- **No CI test gate yet:** `.github/workflows/ci.yml` is still a placeholder. Unit tests and the Tier 1 retrieval check are planned to run on every push.
